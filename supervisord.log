@@ -1,0 +1,79 @@
+2021-06-17 19:18:03,180 WARN received SIGINT indicating exit request
+2021-06-18 11:09:16,274 WARN received SIGINT indicating exit request
+2021-06-18 11:09:16,279 CRIT unknown problem killing smarts (246487):Traceback (most recent call last):
+  File "/home/rfox/miniconda3/envs/SMARTpytorch/lib/python3.8/site-packages/supervisor/process.py", line 466, in kill
+    options.kill(pid, sig)
+  File "/home/rfox/miniconda3/envs/SMARTpytorch/lib/python3.8/site-packages/supervisor/options.py", line 1302, in kill
+    os.kill(pid, signal)
+ProcessLookupError: [Errno 3] No such process
+
+2021-06-18 11:10:34,559 WARN received SIGINT indicating exit request
+2021-06-18 11:11:00,108 WARN received SIGINT indicating exit request
+2021-06-18 11:11:02,111 WARN received SIGINT indicating exit request
+2021-06-18 11:14:36,978 WARN received SIGINT indicating exit request
+2021-06-18 11:15:35,718 WARN received SIGINT indicating exit request
+2021-06-18 11:15:40,787 WARN received SIGINT indicating exit request
+2021-06-18 11:15:45,794 WARN killing 'smarts' (247544) with SIGKILL
+2021-06-18 11:18:02,572 WARN received SIGINT indicating exit request
+2021-06-18 11:18:08,124 WARN received SIGINT indicating exit request
+2021-06-18 11:18:56,011 WARN received SIGINT indicating exit request
+2021-06-18 11:19:03,023 WARN received SIGINT indicating exit request
+2021-06-18 11:19:06,027 WARN killing 'smarts' (250951) with SIGKILL
+2021-06-18 11:28:49,832 WARN received SIGINT indicating exit request
+2021-06-18 11:29:23,130 WARN received SIGINT indicating exit request
+2021-06-18 11:33:44,077 WARN received SIGINT indicating exit request
+2021-06-18 11:33:45,357 WARN received SIGINT indicating exit request
+2021-06-18 11:33:50,378 WARN received SIGINT indicating exit request
+2021-06-18 11:33:54,385 WARN killing 'smarts' (258210) with SIGKILL
+2021-06-18 11:38:41,201 WARN received SIGINT indicating exit request
+2021-06-18 11:44:59,797 WARN received SIGINT indicating exit request
+2021-06-18 11:46:46,651 WARN received SIGINT indicating exit request
+2021-06-18 11:46:47,652 WARN received SIGINT indicating exit request
+2021-06-18 11:59:22,189 WARN received SIGINT indicating exit request
+2021-06-18 12:15:06,908 WARN received SIGINT indicating exit request
+2021-06-18 12:15:08,911 WARN received SIGINT indicating exit request
+2021-06-22 12:47:16,915 WARN received SIGINT indicating exit request
+2021-06-22 14:55:21,240 WARN received SIGINT indicating exit request
+2021-06-22 14:57:35,875 WARN received SIGINT indicating exit request
+2021-06-22 14:58:16,698 WARN received SIGINT indicating exit request
+2021-06-22 14:58:19,063 WARN received SIGINT indicating exit request
+2021-06-22 14:58:27,074 WARN killing 'smarts' (366709) with SIGKILL
+2021-06-22 15:01:48,259 WARN received SIGINT indicating exit request
+2021-06-22 15:06:14,810 WARN received SIGINT indicating exit request
+2021-06-23 15:19:53,697 WARN received SIGINT indicating exit request
+2021-06-23 15:19:56,529 WARN received SIGINT indicating exit request
+2021-06-23 15:21:06,276 WARN received SIGINT indicating exit request
+2021-06-23 15:21:08,069 WARN received SIGINT indicating exit request
+2021-06-23 15:22:24,026 WARN received SIGINT indicating exit request
+2021-06-23 15:23:03,359 WARN received SIGINT indicating exit request
+2021-06-23 15:23:13,844 WARN killing 'smarts' (29353) with SIGKILL
+2021-06-23 15:26:36,705 WARN received SIGINT indicating exit request
+2021-06-23 15:26:43,259 WARN received SIGINT indicating exit request
+2021-06-23 15:26:47,264 WARN killing 'smarts' (30110) with SIGKILL
+2021-06-23 15:27:41,286 WARN received SIGINT indicating exit request
+2021-06-23 15:27:41,611 WARN received SIGINT indicating exit request
+2021-06-23 15:29:53,851 WARN received SIGINT indicating exit request
+2021-06-23 15:29:55,726 WARN received SIGINT indicating exit request
+2021-06-23 15:29:55,874 WARN received SIGINT indicating exit request
+2021-06-23 20:01:39,597 WARN received SIGINT indicating exit request
+2021-06-23 20:01:39,956 WARN received SIGINT indicating exit request
+2021-06-23 20:02:54,065 WARN received SIGINT indicating exit request
+2021-06-23 20:02:55,592 WARN received SIGINT indicating exit request
+2021-06-23 20:03:20,581 WARN received SIGINT indicating exit request
+2021-06-23 20:03:20,730 WARN received SIGINT indicating exit request
+2021-06-23 20:03:20,972 WARN received SIGINT indicating exit request
+2021-06-23 20:04:18,574 WARN received SIGINT indicating exit request
+2021-06-23 20:05:16,271 WARN received SIGINT indicating exit request
+2021-06-23 20:08:03,535 WARN received SIGINT indicating exit request
+2021-06-23 20:08:30,526 WARN received SIGINT indicating exit request
+2021-06-23 20:10:19,349 WARN received SIGINT indicating exit request
+2021-06-23 20:10:37,641 WARN received SIGINT indicating exit request
+2021-06-23 20:12:02,921 WARN received SIGINT indicating exit request
+2021-06-23 20:13:25,271 WARN received SIGINT indicating exit request
+2021-06-23 20:18:21,916 WARN received SIGINT indicating exit request
+2021-06-23 20:23:25,880 WARN received SIGINT indicating exit request
+2021-06-23 20:25:23,610 WARN received SIGINT indicating exit request
+2021-06-28 18:54:47,393 WARN received SIGINT indicating exit request
+2021-06-30 17:49:29,403 WARN received SIGINT indicating exit request
+2021-06-30 17:49:31,414 WARN received SIGINT indicating exit request
+2021-07-06 10:07:50,059 WARN received SIGINT indicating exit request
