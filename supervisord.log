@@ -77,3 +77,13 @@ ProcessLookupError: [Errno 3] No such process
 2021-06-30 17:49:29,403 WARN received SIGINT indicating exit request
 2021-06-30 17:49:31,414 WARN received SIGINT indicating exit request
 2021-07-06 10:07:50,059 WARN received SIGINT indicating exit request
+2021-07-06 16:49:32,807 CRIT Supervisor is running as root.  Privileges were not dropped because no user is specified in the config file.  If you intend to run as root, you can set user=root in the config file to avoid this message.
+2021-07-06 16:49:56,607 WARN received SIGINT indicating exit request
+2021-07-06 16:50:23,977 CRIT Supervisor is running as root.  Privileges were not dropped because no user is specified in the config file.  If you intend to run as root, you can set user=root in the config file to avoid this message.
+2021-07-06 16:50:49,789 WARN received SIGINT indicating exit request
+2021-07-06 16:50:51,794 WARN received SIGINT indicating exit request
+2021-07-06 16:52:36,656 CRIT Supervisor is running as root.  Privileges were not dropped because no user is specified in the config file.  If you intend to run as root, you can set user=root in the config file to avoid this message.
+2021-07-06 16:54:00,329 WARN received SIGINT indicating exit request
+2021-07-06 16:54:01,335 WARN received SIGINT indicating exit request
+2021-07-06 16:54:06,342 WARN received SIGINT indicating exit request
+2021-07-06 16:54:10,347 WARN killing 'smarts' (100) with SIGKILL
