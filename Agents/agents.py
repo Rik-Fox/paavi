@@ -84,40 +84,38 @@ class ChaseViaPointsAgent(Agent):  # LanerWithSpeed
             1 if nearest.lane_index > obs.ego_vehicle_state.lane_index else -1,
         )
 
+    # from pynput.keyboard import Key, Listener
 
-from pynput.keyboard import Key, Listener
+    # class HumanKeyboardAgent(Agent):  # StandardWithAbsoluteSteering
+    #     def __init__(self):
+    #         # initialize the keyboard listener
+    #         self.listener = Listener(on_press=self.on_press)
+    #         self.listener.start()
 
+    #         # Parameters for the human-keyboard agent
+    #         # you need to change them to suit the scenario
+    #         # These values work the best with zoo_intersection
 
-class HumanKeyboardAgent(Agent):  # StandardWithAbsoluteSteering
-    def __init__(self):
-        # initialize the keyboard listener
-        self.listener = Listener(on_press=self.on_press)
-        self.listener.start()
+    #         self.INC_THROT = 0.01
+    #         self.INC_STEER = 5.0
 
-        # Parameters for the human-keyboard agent
-        # you need to change them to suit the scenario
-        # These values work the best with zoo_intersection
+    #         self.MAX_THROTTLE = 0.6
+    #         self.MIN_THROTTLE = 0.45
 
-        self.INC_THROT = 0.01
-        self.INC_STEER = 5.0
+    #         self.MAX_BRAKE = 1.0
+    #         self.MIN_BRAKE = 0.0
 
-        self.MAX_THROTTLE = 0.6
-        self.MIN_THROTTLE = 0.45
+    #         self.MAX_STEERING = 1.0
+    #         self.MIN_STEERING = -1.0
 
-        self.MAX_BRAKE = 1.0
-        self.MIN_BRAKE = 0.0
+    #         self.THROTTLE_DISCOUNTING = 0.99
+    #         self.BRAKE_DISCOUNTING = 0.95
+    #         self.STEERING_DISCOUNTING = 0.9
 
-        self.MAX_STEERING = 1.0
-        self.MIN_STEERING = -1.0
-
-        self.THROTTLE_DISCOUNTING = 0.99
-        self.BRAKE_DISCOUNTING = 0.95
-        self.STEERING_DISCOUNTING = 0.9
-
-        # initial values
-        self.steering_angle = 0.0
-        self.throttle = 0.48
-        self.brake = 0.0
+    #         # initial values
+    #         self.steering_angle = 0.0
+    #         self.throttle = 0.48
+    #         self.brake = 0.0
 
     def on_press(self, key):
         """To control, use the keys:
