@@ -1,0 +1,35 @@
+Bootstrap: docker
+From: huaweinoah/smarts:v0.4.16
+
+
+%post
+    # replace "mesg n || true" as it give ioctl error
+    sed -i /root/.profile -e 's/mesg n || true/tty -s \&\& mesg n/g'
+
+    #download package lists
+    apt-get update -y
+    # install required apt-get packages
+    apt-get install -y git
+    # Reduce the size of the image by deleting the package lists we downloaded,
+    # which are useless now.
+    rm -rf /var/lib/apt/lists/*
+
+    #grab own code from git repo
+    git clone https://github.com/Rik-Fox/paavi.git /home
+
+    # install stabile baselines, numpy and their unfulfilled dependancies
+    cd /home && pip install -r requirements.txt
+
+    # comment out edge snapping as it has lane ID errors on build
+    sed -i /src/smarts/core/sumo_road_network.py -e 's/self._snap_internal_edges(lane_to_poly)/# self._snap_internal_edges(lane_to_poly)/g'
+
+    chmod -R 755 /src/smarts/
+
+%environment
+
+%runscript
+    # prettify shell    
+    echo "export PS1='\[\033[38;5;226m\]Ƨ\[\033[00m\]  \[\033[1;36m\]\u \[\033[1;34m\]\W\[\033[0;35m\] \[\033[1;36m\]# \[\033[0m\]'" >> /root/.bashrc
+    echo "cd /home" >> /root/.bashrc
+
+    source /root/.bashrc

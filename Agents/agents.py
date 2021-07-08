@@ -210,17 +210,17 @@ def config_agents(
     return agent_specs
 
 
-def config_open_agents(debug=False, aggressiveness=3):
+# def config_open_agents(debug=False, aggressiveness=3):
 
-    import importlib
+#     import importlib
 
-    try:
-        open_agent = importlib.import_module("open_agent")
-    except ModuleNotFoundError as e:
-        raise ModuleNotFoundError(
-            f"Ensure that the open-agent has been installed with `pip install open-agent"
-        )
+#     try:
+#         open_agent = importlib.import_module("open_agent")
+#     except ModuleNotFoundError as e:
+#         raise ModuleNotFoundError(
+#             f"Ensure that the open-agent has been installed with `pip install open-agent"
+#         )
 
-    open_agent_spec = open_agent.entrypoint(debug, aggressiveness)
+#     open_agent_spec = open_agent.entrypoint(debug, aggressiveness)
 
-    return open_agent_spec
+#     return open_agent_spec

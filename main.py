@@ -1,5 +1,5 @@
 import logging
-
+import os
 import gym
 
 from Models import zoo_trainer_parser
@@ -58,7 +58,7 @@ def main(config):
         learning_rate=0.01,  # 5e-5,
         buffer_size=config["buffer_size"],
         train_freq=(1, "episode"),
-        tensorboard_log="logs/",
+        tensorboard_log=os.path.expanduser("~/paavi_logs/tb_training_logs/"),
         seed=config["seed"],
         batch_size=config["batch_size"],
         learning_starts=20000,
