@@ -182,10 +182,10 @@ class sb3HiWayEnv(HiWayEnv):
     def reset(self):
 
         observations = super().reset()
-        
+
         ## memory error at ~10000 for with about 200GB of space if these logs not deleted
         sumo_logs = os.path.expanduser("~/.smarts/_sumo_run_logs/")
         if os.path.exists(sumo_logs):
-            shutil.rmtree(sumo_logs)
+            shutil.rmtree(sumo_logs, ignore_errors=True)
 
         return np.hstack([observations[key] for key in self.agent_keys])

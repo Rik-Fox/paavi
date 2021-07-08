@@ -117,37 +117,37 @@ class ChaseViaPointsAgent(Agent):  # LanerWithSpeed
     #         self.throttle = 0.48
     #         self.brake = 0.0
 
-    def on_press(self, key):
-        """To control, use the keys:
-        Up: to increase the throttle
-        Left Alt: to increase the brake
-        Left: to decrease the steering angle
-        Right: to increase the steering angle
-        """
+    # def on_press(self, key):
+    #     """To control, use the keys:
+    #     Up: to increase the throttle
+    #     Left Alt: to increase the brake
+    #     Left: to decrease the steering angle
+    #     Right: to increase the steering angle
+    #     """
 
-        if key == Key.up:
-            self.throttle = min(self.throttle + self.INC_THROT, self.MAX_THROTTLE)
-        elif key == Key.alt_l:
-            self.brake = min(self.brake + 10.0 * self.INC_THROT, self.MAX_BRAKE)
-        elif key == Key.right:
-            self.steering_angle = min(
-                self.steering_angle + self.INC_STEER, self.MAX_STEERING
-            )
-        elif key == Key.left:
-            self.steering_angle = max(
-                self.steering_angle - self.INC_STEER, self.MIN_STEERING
-            )
+    #     if key == Key.up:
+    #         self.throttle = min(self.throttle + self.INC_THROT, self.MAX_THROTTLE)
+    #     elif key == Key.alt_l:
+    #         self.brake = min(self.brake + 10.0 * self.INC_THROT, self.MAX_BRAKE)
+    #     elif key == Key.right:
+    #         self.steering_angle = min(
+    #             self.steering_angle + self.INC_STEER, self.MAX_STEERING
+    #         )
+    #     elif key == Key.left:
+    #         self.steering_angle = max(
+    #             self.steering_angle - self.INC_STEER, self.MIN_STEERING
+    #         )
 
-    def act(self, obs):
-        # discounting ..
-        self.throttle = max(
-            self.throttle * self.THROTTLE_DISCOUNTING, self.MIN_THROTTLE
-        )
-        self.steering_angle = self.steering_angle * self.STEERING_DISCOUNTING
-        self.brake = self.brake * self.BRAKE_DISCOUNTING
-        # send the action
-        self.action = [self.throttle, self.brake, self.steering_angle]
-        return self.action
+    # def act(self, obs):
+    #     # discounting ..
+    #     self.throttle = max(
+    #         self.throttle * self.THROTTLE_DISCOUNTING, self.MIN_THROTTLE
+    #     )
+    #     self.steering_angle = self.steering_angle * self.STEERING_DISCOUNTING
+    #     self.brake = self.brake * self.BRAKE_DISCOUNTING
+    #     # send the action
+    #     self.action = [self.throttle, self.brake, self.steering_angle]
+    #     return self.action
 
 
 class simple_agent(Agent):
