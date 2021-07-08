@@ -1,9 +1,9 @@
 sphinx-autobuild==2021.3.14
-mkl==2021.3.0
+# mkl==2021.3.0
 PySocks==1.7.1
 smarts==0.4.16
-mkl-service==2.3.0
-mkl-random==1.2.2
+# mkl-service==2.3.0
+# mkl-random==1.2.2
 stable-baselines3==1.0
 pycodestyle==2.7.0
 sb3-contrib==1.0
@@ -14,7 +14,7 @@ flake8==3.9.2
 sphinx-autodoc-typehints==1.12.0
 tbb==2021.3.0
 common-cmplr-lib-rt==2021.2.0
-mkl-fft==1.3.0
+# mkl-fft==1.3.0
 pytest-env==0.6.2
 common-cmplr-lic-rt==2021.2.0
 importlab==0.6.1

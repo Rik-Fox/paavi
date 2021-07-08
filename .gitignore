@@ -139,3 +139,6 @@ OpEn_build/
 
 # trained model data
 Models/*.zip
+
+#singularity containers/images
+*.sif

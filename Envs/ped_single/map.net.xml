@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on 2021-06-23 20:19:10 by Eclipse SUMO netedit Version 1.9.2
+<!-- generated on 2021-07-08 12:41:04 by Eclipse SUMO netedit Version 1.9.2
 <configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/netconvertConfiguration.xsd">
 
     <input>
-        <sumo-net-file value="/home/rfox/PhD/SUMOpytorch/Envs/ped_single/map.net.xml"/>
+        <sumo-net-file value="/home/rfox/PhD/paavi/Envs/ped_single/map.net.xml"/>
     </input>
 
     <output>
-        <output-file value="/home/rfox/PhD/SUMOpytorch/Envs/ped_single/map.net.xml"/>
+        <output-file value="/home/rfox/PhD/paavi/Envs/ped_single/map.net.xml"/>
     </output>
 
     <processing>
