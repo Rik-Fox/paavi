@@ -138,10 +138,10 @@ class sb3HiWayEnv(HiWayEnv):
 
         # pdb.set_trace()
 
-        ## memory error at ~10000 for with about 200GB of space if these logs not deleted
-        sumo_logs = os.path.expanduser("~/.smarts/_sumo_run_logs/")
-        if os.path.exists(sumo_logs):
-            shutil.rmtree(sumo_logs)
+        # ## memory error at ~10000 for with about 200GB of space if these logs not deleted
+        # sumo_logs = os.path.expanduser("~/.smarts/_sumo_run_logs/")
+        # if os.path.exists(sumo_logs):
+        #     shutil.rmtree(sumo_logs)
 
         if isinstance(self.action_space, spaces.Discrete):
             if isinstance(agent_actions, np.int64):
