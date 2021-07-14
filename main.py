@@ -3,11 +3,8 @@ import os
 import gym
 
 from Models import zoo_trainer_parser
-
 from smarts.core.agent_interface import AgentType
-
 from util.util import ALGOS
-
 from Agents.agents import *
 
 logging.basicConfig(level=logging.INFO)
@@ -52,33 +49,42 @@ def main(config):
     else:
         policy_kwargs = None
 
-    model = ALGOS[config["algo"]](
-        "MlpPolicy",
-        env,
-        learning_rate=0.01,  # 5e-5,
-        buffer_size=config["buffer_size"],
-        train_freq=(1, "episode"),
-        tensorboard_log=os.path.expanduser("~/paavi_logs/tb_training_logs/"),
-        seed=config["seed"],
-        batch_size=config["batch_size"],
-        learning_starts=20000,
-        target_update_interval=1000,
-        exploration_fraction=0.005,
-        exploration_initial_eps=1.0,
-        exploration_final_eps=0.01,
-        policy_kwargs=policy_kwargs,
-        verbose=0,
-    )
+    if config["load"] is not None:
+        # .load :param env: the new environment to run the loaded model on
+        # (can be None if you only need prediction from a trained model) has priority over any saved environment
+        # XXX: must overwrite env otherwise tries to connect to dead envision server instance
 
-    # model = ALGOS[config["algo"]].load(
-    #     f'Models/{config["algo"]}{config["batch_size"]}_ped_single'
-    # )
+        model = ALGOS[config["algo"]].load(config["load"], env=env)  # env=None
 
-    model.learn(
-        total_timesteps=1000000, tb_log_name=f'{config["algo"]}_{config["seed"]}'
-    )
+        # reset tensorboard_log incase model wasn't initally created from cwd
+        model.tensorboard_log = config["log_dir"]
 
-    model.save(f'Models/{config["algo"]}{config["batch_size"]}_ped_single')
+    else:
+        model = ALGOS[config["algo"]](
+            "MlpPolicy",
+            env,
+            learning_rate=0.01,  # 5e-5,
+            buffer_size=config["buffer_size"],
+            train_freq=(1, "episode"),
+            tensorboard_log=config["log_dir"],
+            seed=config["seed"],
+            batch_size=config["batch_size"],
+            learning_starts=20000,
+            target_update_interval=1000,
+            exploration_fraction=0.005,
+            exploration_initial_eps=1.0,
+            exploration_final_eps=0.01,
+            policy_kwargs=policy_kwargs,
+            verbose=0,
+        )
+
+        config["load"] = os.path.join(
+            os.path.expanduser("~/paavi_logs/"),
+            f'Models/{config["algo"]}{config["batch_size"]}_{config["scenarios"][0].split("/")[1]}',
+        )
+
+    model.learn(total_timesteps=10000, tb_log_name=f'{config["algo"]}_{config["seed"]}')
+    model.save(config["load"])
 
 
 if __name__ == "__main__":
@@ -89,10 +95,14 @@ if __name__ == "__main__":
         default=None,
         help="If set, agents will become 'done' after this many steps. set to None to disable.",
     )
-
     parser.add_argument("--buffer_size", type=int, default=10000)
-
     parser.add_argument("--batch_size", type=int, default=1024)
+    parser.add_argument("--load", type=str, default=None)
+    parser.add_argument(
+        "--log_dir",
+        type=str,
+        default=os.path.expanduser("~/paavi_logs/tb_training_logs/"),
+    )
 
     args = parser.parse_args()
 
@@ -108,7 +118,10 @@ if __name__ == "__main__":
     #     "seed": 42,
     #     "algo": "qrdqn",
     #     "max_episode_steps": None,
+    #     "buffer_size": 1024,
     #     "batch_size": 256,
+    #     "load": "Models/qrdqn256_ped_single",
+    #     "log_dir": os.path.expanduser("~/paavi_logs/tb_training_logs/"),
     # }
 
     main(config)
