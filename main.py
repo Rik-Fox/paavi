@@ -7,6 +7,8 @@ from smarts.core.agent_interface import AgentType
 from util.util import ALGOS
 from Agents.agents import *
 
+# import pdb
+
 logging.basicConfig(level=logging.INFO)
 
 AGENT_IDS = ["Agent-007"]  #    ["Agent-007", "Agent-009"]
@@ -84,7 +86,7 @@ def main(config):
         )
 
     model.learn(
-        total_timesteps=config["n-timesteps"],
+        total_timesteps=config["n_timesteps"],
         tb_log_name=f'{config["algo"]}_{config["seed"]}',
     )
     model.save(config["load"])
@@ -125,7 +127,7 @@ if __name__ == "__main__":
     #     "batch_size": 256,
     #     "load": "Models/qrdqn256_ped_single",
     #     "log_dir": os.path.expanduser("~/paavi_logs/tb_training_logs/"),
-    #     "n-timesteps": 1e6,
+    #     "n_timesteps": 1e6,
     # }
 
     main(config)
