@@ -36,7 +36,7 @@ def zoo_trainer_parser(program: str):
         "-n",
         "--n-timesteps",
         help="Overwrite the number of timesteps",
-        default=-1,
+        default=1e6,
         type=int,
     )
     parser.add_argument(

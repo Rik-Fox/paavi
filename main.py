@@ -83,7 +83,10 @@ def main(config):
             f'Models/{config["algo"]}{config["batch_size"]}_{config["scenarios"][0].split("/")[1]}',
         )
 
-    model.learn(total_timesteps=10000, tb_log_name=f'{config["algo"]}_{config["seed"]}')
+    model.learn(
+        total_timesteps=config["n-timesteps"],
+        tb_log_name=f'{config["algo"]}_{config["seed"]}',
+    )
     model.save(config["load"])
 
 
@@ -122,6 +125,7 @@ if __name__ == "__main__":
     #     "batch_size": 256,
     #     "load": "Models/qrdqn256_ped_single",
     #     "log_dir": os.path.expanduser("~/paavi_logs/tb_training_logs/"),
+    #     "n-timesteps": 1e6,
     # }
 
     main(config)
