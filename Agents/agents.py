@@ -1,7 +1,4 @@
-from typing import Sequence
-
-from smarts.core.agent import Agent, AgentSpec
-from smarts.core.agent_interface import AgentType, AgentInterface
+from smarts.core.agent import Agent
 from smarts.core.sensors import Observation
 
 import numpy as np
@@ -11,7 +8,7 @@ from gym import spaces
 # It is a tuple of `throttle` [0, 1], `brake` [0, 1], and `steering` [-1, 1].
 
 # * `ActionSpaceType.ActuatorDynamic`: continuous action space with throttle, brake, steering rate.
-# Steering rate means the amount of steering angle change *per second*
+# Steering rate means the amount of steering anconfiggle change *per second*
 # (either positive or negative) to be applied to the current steering angle.
 # It is also a tuple of `throttle` [0, 1], `brake` [0, 1], and `steering_rate`,
 # where steering rate is in number of radians per second.
@@ -151,13 +148,17 @@ class ChaseViaPointsAgent(Agent):  # LanerWithSpeed
 
 
 class simple_agent(Agent):
+
+    OBSERVATION_SPACE = spaces.Box(0.0, np.inf, shape=(5,))
+    ACTION_SPACE = spaces.Discrete(4)
+
     def __init__(self) -> None:
         super().__init__()
 
-    OBSERVATION_SPACE = spaces.Box(0.0, np.inf, shape=(5,))
-
     def act(self, obs: Observation):
-        pass
+        print(
+            f"{simple_agent} -> I'm not acting, as a learning model should be acting for me"
+        )
 
     def observation_adaptor(env_obs: Observation):
         return np.hstack(
@@ -167,60 +168,3 @@ class simple_agent(Agent):
                 np.array(env_obs.ego_vehicle_state.lane_index),
             ]
         )
-
-
-def config_agents(
-    agent_ids: Sequence[str],
-    agent_types: Sequence[AgentType],
-    agent_builders: Sequence,
-    **kwargs,
-):
-
-    if len(agent_types) == 1:
-        agent_types = [agent_types[0] for i in range(len(agent_ids))]
-
-    if len(agent_builders) == 1:
-        agent_builders = [agent_builders[0] for i in range(len(agent_ids))]
-
-    assert len(agent_types) == len(
-        agent_ids
-    ), "Number of AGENT_TYPES must either be 1 or match number of AGENT_IDS"
-    assert len(agent_builders) == len(
-        agent_ids
-    ), "Number of AGENT_BUILDERS must either be 1 or match number of AGENT_IDS"
-
-    agent_specs = {
-        agent_id: AgentSpec(
-            interface=AgentInterface.from_type(agent_type, **kwargs),
-            agent_params={
-                # "path_to_model": Path(__file__).resolve().parent / "model",
-                "observation_space": agent_builder.OBSERVATION_SPACE,
-            },
-            agent_builder=agent_builder,
-            observation_adapter=agent_builder.observation_adaptor,
-            # reward_adapter=reward_adapter,
-            # action_adapter=action_adapter,
-        )
-        for agent_id, agent_type, agent_builder in zip(
-            agent_ids, agent_types, agent_builders
-        )
-    }
-    # agent_spec.interface.vehicle_type = "motorcycle"
-
-    return agent_specs
-
-
-# def config_open_agents(debug=False, aggressiveness=3):
-
-#     import importlib
-
-#     try:
-#         open_agent = importlib.import_module("open_agent")
-#     except ModuleNotFoundError as e:
-#         raise ModuleNotFoundError(
-#             f"Ensure that the open-agent has been installed with `pip install open-agent"
-#         )
-
-#     open_agent_spec = open_agent.entrypoint(debug, aggressiveness)
-
-#     return open_agent_spec

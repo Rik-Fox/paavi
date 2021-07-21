@@ -1,12 +1,15 @@
 ## import parser args from SMARTS then add args from zoo's train.py
 
 from examples import default_argument_parser
+from os import path
 from util.util import StoreDict
 from Agents import ALGOS
 
 
 def trainer_parser(program: str):
     parser = default_argument_parser(program)
+
+    ## zoo's arguments
     parser.add_argument(
         "--algo",
         help="RL Algorithm",
@@ -36,7 +39,7 @@ def trainer_parser(program: str):
     parser.add_argument(
         "-n",
         "--n-timesteps",
-        help="Overwrite the number of timesteps",
+        help="Overwrite the number of timesteps to learn for in each epoch",
         default=1e6,
         type=int,
     )
@@ -174,6 +177,26 @@ def trainer_parser(program: str):
         action="store_true",
         default=False,
         help="Ensure that the run has a unique ID",
+    )
+
+    # own arguments
+    parser.add_argument(
+        "--max_episode_steps",
+        default=None,
+        help="If set, agents will become 'done' after this many steps. set to None to disable.",
+    )
+    parser.add_argument("--buffer_size", type=int, default=10000)
+    parser.add_argument("--batch_size", type=int, default=1024)
+    parser.add_argument("--load", type=str, default=None)
+    parser.add_argument(
+        "--log_dir",
+        type=str,
+        default=path.expanduser("~/paavi_logs/tb_training_logs/"),
+    )
+    parser.add_argument(
+        "--her",
+        help="use hindsight experience replay, implemented for (SAC, TD3, DDPG, DQN).",
+        action="store_true",
     )
 
     return parser

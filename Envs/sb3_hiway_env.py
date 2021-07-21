@@ -121,15 +121,22 @@ class sb3HiWayEnv(HiWayEnv):
         #     }
         # )
 
-        # for each agent
-        self.observation_space = spaces.Box(0, np.inf, shape=(5,))
-        self.action_space = spaces.Discrete(4)
-        self.actions = [
-            "keep_lane",
-            "slow_down",
-            "change_lane_left",
-            "change_lane_right",
-        ]
+        self.observation_space = agent_specs[
+            self.agent_keys[0]
+        ].agent_builder.OBSERVATION_SPACE
+        # self.observation_space = spaces.Box(0, np.inf, shape=(5,))
+
+        self.action_space = agent_specs[self.agent_keys[0]].agent_builder.ACTION_SPACE
+        # self.action_space = spaces.Discrete(4)
+
+        # discrete actions that can be given to smarts
+        if isinstance(self.action_space, spaces.Discrete):
+            self.actions = [
+                "keep_lane",
+                "slow_down",
+                "change_lane_left",
+                "change_lane_right",
+            ]
 
     # puts actions into dict to give to smarts,
     def step(self, agent_actions):
