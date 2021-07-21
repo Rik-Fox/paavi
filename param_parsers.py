@@ -1,10 +1,11 @@
 ## import parser args from SMARTS then add args from zoo's train.py
 
 from examples import default_argument_parser
-from util.util import ALGOS, StoreDict
+from util.util import StoreDict
+from Agents import ALGOS
 
 
-def zoo_trainer_parser(program: str):
+def trainer_parser(program: str):
     parser = default_argument_parser(program)
     parser.add_argument(
         "--algo",
