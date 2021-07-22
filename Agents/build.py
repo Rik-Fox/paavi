@@ -132,9 +132,5 @@ def build_algo(config, env):
     else:
         raise NotImplementedError
 
-    save_path = os.path.join(
-        os.path.expanduser("~/paavi_logs/"),
-        f'Models/{config["algo"]}{config["batch_size"]}_{config["scenarios"][0].split("/")[1]}',
-    )
 
-    return model, save_path
+    return model
