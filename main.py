@@ -1,7 +1,11 @@
 import logging
+import os
+import time
+from stable_baselines3.common.monitor import Monitor
 from smarts.core.agent_interface import AgentType
 from Agents import agents, build
 from Envs import build_env
+from custom_logging import CustomTrackingCallback
 
 # import pdb
 
@@ -12,7 +16,10 @@ AGENT_TYPES = [AgentType.Laner]
 AGENT_BUILDERS = [agents.simple_agent]
 
 
-def main(config):
+def main(config):    
+
+    monitor_path = os.path.join(config["log_dir"], "Monitor_logs")
+    run_name = f'{config["algo"]}_seed{config["seed"]}_batchsize{config["batch_size"]}_env_{config["scenarios"][0].split("/")[1]}'
 
     config["agent_specs"] = build.build_agents(
         AGENT_IDS,
@@ -20,16 +27,18 @@ def main(config):
         AGENT_BUILDERS,
         max_episode_steps=config["max_episode_steps"],
     )
+    
+    env = Monitor(build_env(config), filename=os.path.join(monitor_path, f"{run_name}_monitor.csv"))
 
-    env = build_env(config)
-
-    agent, save_path = build.build_algo(config, env=env)
+    agent = build.build_algo(config, env=env)
 
     agent.learn(
         total_timesteps=config["n_timesteps"],
         tb_log_name=f'{config["algo"]}_{config["seed"]}',
+        callback=CustomTrackingCallback(check_freq=100, log_dir=monitor_path, run_name=run_name, start_time =time.time(), verbose=1),
     )
-    agent.save(save_path)
+
+    agent.save(os.path.join(monitor_path, f'{run_name}_final'))
 
 
 if __name__ == "__main__":
@@ -52,7 +61,7 @@ if __name__ == "__main__":
     #     "buffer_size": 1024,
     #     "batch_size": 256,
     #     "load": None,  # "Models/qrdqn256_ped_single",
-    #     "log_dir": path.expanduser("~/paavi_logs/tb_training_logs/"),
+    #     "log_dir": path.expanduser("~/paavi_logs/"),
     #     "n_timesteps": 1e6,
     # }
 

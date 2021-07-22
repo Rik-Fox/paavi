@@ -191,7 +191,7 @@ def trainer_parser(program: str):
     parser.add_argument(
         "--log_dir",
         type=str,
-        default=path.expanduser("~/paavi_logs/tb_training_logs/"),
+        default=path.expanduser("~/paavi_logs/"),
     )
     parser.add_argument(
         "--her",
