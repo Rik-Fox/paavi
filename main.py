@@ -16,10 +16,11 @@ AGENT_TYPES = [AgentType.Laner]
 AGENT_BUILDERS = [agents.simple_agent]
 
 
-def main(config):    
+def main(config):   
 
     monitor_path = os.path.join(config["log_dir"], "Monitor_logs")
-    run_name = f'{config["algo"]}_seed{config["seed"]}_batchsize{config["batch_size"]}_env_{config["scenarios"][0].split("/")[1]}'
+    os.makedirs(monitor_path, exist_ok=True)
+    run_name = f'{config["algo"]}_seed{config["seed"]}_batchsize{config["batch_size"]}_{config["scenarios"][0].split("/")[1]}'
 
     config["agent_specs"] = build.build_agents(
         AGENT_IDS,

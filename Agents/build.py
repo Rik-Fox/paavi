@@ -1,3 +1,4 @@
+from genericpath import exists
 import os
 from typing import Sequence
 
@@ -67,6 +68,9 @@ def build_agents(
 
 def build_algo(config, env):
 
+    tb_log_dir = os.path.join(config["log_dir"], "tb_run_logs")
+    os.makedirs(tb_log_dir, exist_ok=True)
+
     if config["load"] is not None:
         # .load :param env: the new environment to run the loaded model on
         # (can be None if you only need prediction from a trained model) has priority over any saved environment
@@ -74,7 +78,7 @@ def build_algo(config, env):
         model = ALGOS[config["algo"]].load(config["load"], env=env)  # env=None
 
         # reset tensorboard_log incase model wasn't initally created from cwd
-        model.tensorboard_log = config["log_dir"]
+        model.tensorboard_log = tb_log_dir
 
     elif config["her"]:
         implemented = ["sac", "td3", "ddpg", "dqn"]
@@ -93,7 +97,7 @@ def build_algo(config, env):
             learning_rate=0.01,  # 5e-5,
             buffer_size=config["buffer_size"],
             train_freq=(1, "episode"),
-            tensorboard_log=config["log_dir"],
+            tensorboard_log=tb_log_dir,
             seed=config["seed"],
             batch_size=config["batch_size"],
             learning_starts=20000,
@@ -102,7 +106,7 @@ def build_algo(config, env):
             exploration_initial_eps=1.0,
             exploration_final_eps=0.01,
             policy_kwargs=dict(n_quantiles=50) if config["algo"] == "qrdqn" else None,
-            verbose=0,
+            verbose=2,
         )
     elif config["algo"] == "ppo":
         # doesnt take the epsilon behaviour arguments for exploration
@@ -112,9 +116,9 @@ def build_algo(config, env):
             learning_rate=0.01,  # 5e-5,
             n_steps=64,
             batch_size=config["batch_size"],
-            tensorboard_log=config["log_dir"],
+            tensorboard_log=tb_log_dir,
             policy_kwargs=None,
-            verbose=0,
+            verbose=2,
             seed=config["seed"],
         )
     elif config["algo"] == "a2c":
@@ -124,13 +128,17 @@ def build_algo(config, env):
             env,
             learning_rate=0.01,  # 5e-5,
             n_steps=1024,
-            tensorboard_log=config["log_dir"],
+            tensorboard_log=tb_log_dir,
             policy_kwargs=None,
-            verbose=0,
+            verbose=2,
             seed=config["seed"],
         )
     else:
         raise NotImplementedError
 
+    save_path = os.path.join(
+        config["log_dir"],
+        f'Models/{config["algo"]}{config["batch_size"]}_{config["scenarios"][0].split("/")[1]}',
+    )
 
     return model
