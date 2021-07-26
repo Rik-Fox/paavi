@@ -61,23 +61,21 @@ class CustomTrackingCallback(BaseCallback):
                 # New best model, you could save the agent here
                 if mean_reward > self.best_mean_reward:
                     self.best_mean_reward = mean_reward
-                    os.remove(self.best_save_path+'*')
                     # Example for saving best model
                     if self.verbose > 0:
                         print("Saving new best model to {}".format(self.best_save_path))
-                    self.model.save(f"{self.best_save_path}_{np.round(mean_reward,3)}")
+                    self.model.save(self.best_save_path)
 
                 if mean_reward < self.worst_mean_reward:
                     self.worst_mean_reward = mean_reward
-                    os.remove(self.worst_save_path+'*')
                     if self.verbose > 0:
                         print("Saving new worst model to {}".format(self.worst_save_path))
-                    self.model.save( f"{self.worst_save_path}_{np.round(mean_reward,3)}")
+                    self.model.save(self.worst_save_path)
 
                 if self.num_timesteps % 5000 == 0:
                     if self.verbose > 0:
                         print("Saving periodic model to {}".format(self.periodic_save_path))
-                    self.model.save(f"{self.periodic_save_pat}_{self.num_timesteps}")
+                    self.model.save(f"{self.periodic_save_path}_{self.num_timesteps}")
 
                 if self.start_time - time.time() % 1200 < 3:
                     self.model.save(self.checkpoint_save_path)
