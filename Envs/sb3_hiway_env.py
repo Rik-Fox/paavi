@@ -151,13 +151,15 @@ class sb3HiWayEnv(HiWayEnv):
         #     shutil.rmtree(sumo_logs)
 
         if isinstance(self.action_space, spaces.Discrete):
-            if isinstance(agent_actions, np.int64):
+            # print(agent_actions, type(agent_actions), isinstance(agent_actions, np.int64), np.ndim(agent_actions))
+            # action from sb3 is sometimes 0D array instead of scalar, which has type array but needs handling like a scalar
+            if isinstance(agent_actions, np.int64) or (np.ndim(agent_actions) == 0):
                 action_dict = {self.agent_keys[0]: self.actions[agent_actions]}
             else:
-                # action_dict = {}
-                # for i, agent_key in enumerate(self.agent_keys):
-                #     action_dict[agent_key] = self.actions[agent_actions[i]]
-                raise NotImplementedError
+                action_dict = {}
+                for i, agent_key in enumerate(self.agent_keys):
+                    action_dict[agent_key] = self.actions[agent_actions[i]]
+                # print(agent_actions, type(agent_actions), isinstance(agent_actions, np.int64))
         else:
             raise NotImplementedError
 
@@ -183,7 +185,7 @@ class sb3HiWayEnv(HiWayEnv):
         #         ]
         #     )
 
-        return observations, rewards, dones, raw_infos
+        return observations, rewards, raw_dones, raw_infos
 
     # strips observations out of dict from smarts
     def reset(self):

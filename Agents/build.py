@@ -101,10 +101,10 @@ def build_algo(config, env):
             seed=config["seed"],
             batch_size=config["batch_size"],
             learning_starts=20000,
-            target_update_interval=100,
+            target_update_interval=1024,
             exploration_fraction=0.005,
             exploration_initial_eps=1.0,
-            exploration_final_eps=0.01,
+            exploration_final_eps=0.1,
             policy_kwargs=dict(n_quantiles=50) if config["algo"] == "qrdqn" else None,
             verbose=2,
         )

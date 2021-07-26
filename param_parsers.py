@@ -187,7 +187,7 @@ def trainer_parser(program: str):
     )
     parser.add_argument("--buffer_size", type=int, default=10000)
     parser.add_argument("--batch_size", type=int, default=1024)
-    parser.add_argument("--load", type=str, default=None)
+    parser.add_argument("--load_path", type=str, default=None)
     parser.add_argument(
         "--log_dir",
         type=str,

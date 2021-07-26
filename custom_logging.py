@@ -45,6 +45,12 @@ class CustomTrackingCallback(BaseCallback):
         if self.periodic_save_path is not None:
             os.makedirs(self.periodic_save_path, exist_ok=True)
 
+    def _on_rollout_end(self) -> None:
+        
+        
+
+        pass
+
     def _on_step(self) -> bool:
         if self.n_calls % self.check_freq == 0:
 
@@ -64,21 +70,21 @@ class CustomTrackingCallback(BaseCallback):
                     # Example for saving best model
                     if self.verbose > 0:
                         print("Saving new best model to {}".format(self.best_save_path))
-                    self.model.save(self.best_save_path)
+                    self.model.save(f"{self.best_save_path}/best")
 
                 if mean_reward < self.worst_mean_reward:
                     self.worst_mean_reward = mean_reward
                     if self.verbose > 0:
                         print("Saving new worst model to {}".format(self.worst_save_path))
-                    self.model.save(self.worst_save_path)
+                    self.model.save(f"{self.worst_save_path}/worst")
 
-                if self.num_timesteps % 5000 == 0:
+                if self.num_timesteps % 10000 == 0:
                     if self.verbose > 0:
                         print("Saving periodic model to {}".format(self.periodic_save_path))
-                    self.model.save(f"{self.periodic_save_path}_{self.num_timesteps}")
+                    self.model.save(f"{self.periodic_save_path}/ep_{self.num_timesteps}")
 
-                if self.start_time - time.time() % 1200 < 3:
-                    self.model.save(self.checkpoint_save_path)
+                if ((self.start_time - time.time()) % 1200) <= 3:
+                    self.model.save(f"{self.checkpoint_save_path}/continuation_point")
 
                 self.logger.record("custom/mean_ep_rwd", mean_reward)
                 # self.logger.record("", )
@@ -86,5 +92,6 @@ class CustomTrackingCallback(BaseCallback):
                 # self.logger.record("", )
                 # self.logger.record("", )
                 # self.logger.record("", )
+                self.logger.dump(self.num_timesteps)
 
         return True
