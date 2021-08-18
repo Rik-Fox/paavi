@@ -1,9 +1,5 @@
-import os
 import logging
 
-from gym import make
-
-from examples import default_argument_parser
 from smarts.core.utils.episodes import episodes
 
 from Agents import ALGOS, build
@@ -46,11 +42,8 @@ def eval(agent, env, num_episodes):
 
 
 if __name__ == "__main__":
-    parser = default_argument_parser("eval_env")
-    parser.add_argument("algo", type=str)
-    parser.add_argument("--load_path", type=str, default=None)
-    parser.add_argument("--num_eps", type=int, default=5)
-    parser.add_argument("--log_dir", type=str, default=os.path.expanduser("~/paavi_logs/eval_run_logs"))
+    from param_parsers import eval_parser
+    parser = eval_parser("eval_env")
 
     config = vars(parser.parse_args())
 
@@ -62,7 +55,7 @@ if __name__ == "__main__":
     else:
         model = ALGOS[config["algo"]].load(config["load_path"], env=env)  # env=None
 
-    # reset tensorboard_log incase model wasn't initally created from cwd
+    # manually set tensorboard_log incase model wasn't initally logging there
     model.tensorboard_log = config["log_dir"]
- 
+
     eval(model, env, config["num_eps"])

@@ -71,7 +71,7 @@ def build_algo(config, env):
     tb_log_dir = os.path.join(config["log_dir"], "tb_run_logs")
     os.makedirs(tb_log_dir, exist_ok=True)
 
-    if config["load"] is not None:
+    if config["load_path"] is not None:
         # .load :param env: the new environment to run the loaded model on
         # (can be None if you only need prediction from a trained model) has priority over any saved environment
         # XXX: must overwrite env otherwise tries to connect to dead envision server instance

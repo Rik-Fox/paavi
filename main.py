@@ -2,6 +2,13 @@ import os
 import time
 from stable_baselines3.common.monitor import Monitor
 
+# fixes below error
+# XXX: Error: mkl-service + Intel(R) MKL: MKL_THREADING_LAYER=INTEL is incompatible with libgomp-a34b3233.so.1 library.
+        # Try to import numpy first or set the threading layer accordingly. Set MKL_SERVICE_FORCE_INTEL to force it.
+import os
+os.environ['MKL_THREADING_LAYER'] = 'GNU'
+os.environ['MKL_SERVICE_FORCE_INTEL'] = "1"
+
 from Agents import build
 from Envs import build_env
 from custom_logging import CustomTrackingCallback
