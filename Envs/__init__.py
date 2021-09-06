@@ -10,6 +10,7 @@ register(
     entry_point="Envs.sb3_hiway_env:sb3HiWayEnv",
 )
 
+
 def build_env(config):
 
     AGENT_IDS = ["Agent-007"]  #    ["Agent-007", "Agent-009"]
@@ -42,7 +43,7 @@ def build_env(config):
         sumo_auto_start=True,
         endless_traffic=True,
         envision_endpoint=None,
-        envision_record_data_replay_path=None,
+        envision_record_data_replay_path=config["record_path"],
         zoo_addrs=None,
     )
     # else:

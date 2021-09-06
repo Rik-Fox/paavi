@@ -4,6 +4,7 @@ from os import path
 from util.util import StoreDict
 from Agents import ALGOS
 
+
 def default_argument_parser(program: str):
     """This factory method returns a vanilla `argparse.ArgumentParser` with the
     minimum subset of arguments that should be supported.
@@ -39,6 +40,7 @@ def default_argument_parser(program: str):
         default=10,
     )
     return parser
+
 
 def trainer_parser(program: str):
     parser = default_argument_parser(program)
@@ -235,13 +237,21 @@ def trainer_parser(program: str):
 
     return parser
 
+
 def eval_parser(program: str):
     parser = default_argument_parser(program)
 
-    
     parser.add_argument("algo", type=str)
     parser.add_argument("--load_path", type=str, default=None)
+    parser.add_argument("--record_path", type=str, default=None)
     parser.add_argument("--num_eps", type=int, default=5)
-    parser.add_argument("--log_dir", type=str, default=path.expanduser("~/paavi_logs/eval_run_logs"))
+    parser.add_argument(
+        "--log_dir", type=str, default=path.expanduser("~/paavi_logs/eval_run_logs")
+    )
+    parser.add_argument(
+        "--her",
+        help="use hindsight experience replay, implemented for (SAC, TD3, DDPG, DQN).",
+        action="store_true",
+    )
 
     return parser

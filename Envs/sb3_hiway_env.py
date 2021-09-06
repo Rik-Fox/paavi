@@ -187,14 +187,17 @@ class sb3HiWayEnv(HiWayEnv):
 
         return observations, rewards, raw_dones, raw_infos
 
+    def render(self, mode):
+        return super().render(mode=mode)
+
     # strips observations out of dict from smarts
     def reset(self):
 
         observations = super().reset()
 
         ## memory error at ~10000 for with about 200GB of space if these logs not deleted
-        sumo_logs = os.path.expanduser("~/.smarts/_sumo_run_logs/")
-        if os.path.exists(sumo_logs):
-            shutil.rmtree(sumo_logs, ignore_errors=True)
+        # sumo_logs = os.path.expanduser("~/.smarts/_sumo_run_logs/")
+        # if os.path.exists(sumo_logs):
+        #     shutil.rmtree(sumo_logs, ignore_errors=True)
 
         return np.hstack([observations[key] for key in self.agent_keys])
