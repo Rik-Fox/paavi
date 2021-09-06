@@ -234,6 +234,7 @@ def trainer_parser(program: str):
         help="use hindsight experience replay, implemented for (SAC, TD3, DDPG, DQN).",
         action="store_true",
     )
+    parser.add_argument("--record_path", type=str, default=None)
 
     return parser
 
