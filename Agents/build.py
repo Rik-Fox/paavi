@@ -68,8 +68,9 @@ def build_agents(
 
 def build_algo(config, env):
 
-    tb_log_dir = os.path.join(config["log_dir"], "tb_run_logs")
-    os.makedirs(tb_log_dir, exist_ok=True)
+    # tb_log_dir = os.path.join(config["log_dir"], "tb_run_logs")
+    # os.makedirs(tb_log_dir, exist_ok=True)
+    tb_log_dir = None #replaced with custom logging using callback function
 
     if config["load_path"] is not None:
         # .load :param env: the new environment to run the loaded model on
