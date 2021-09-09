@@ -16,28 +16,27 @@ class CustomTrackingCallback(BaseCallback):
     It must contains the file created by the ``Monitor`` wrapper.
     :param verbose: (int)
     """
-    def __init__(self, check_freq: int, log_dir: str, run_name: str, start_time: float, verbose=1):
+
+    def __init__(
+        self, check_freq: int, log_dir: str, run_name: str, start_time: float, verbose=1
+    ):
         super(CustomTrackingCallback, self).__init__(verbose)
         self.check_freq = check_freq
         self.log_dir = log_dir
         self.run_name = run_name
         self.start_time = start_time
 
-        self.best_save_path = os.path.join(log_dir, run_name, 'best_model')        
-        self.worst_save_path = os.path.join(log_dir, run_name, 'worst_model')
-        self.checkpoint_save_path = os.path.join(log_dir, run_name, 'checkpoint_model')
-        self.periodic_save_path = os.path.join(log_dir, run_name, 'periodic_model')
+        self.save_path = os.path.join(log_dir, run_name)
+        self.checkpoint_save_path = os.path.join(log_dir, run_name, "checkpoint_model")
+        self.periodic_save_path = os.path.join(log_dir, run_name, "periodic_model")
 
-        self.best_mean_reward = -np.inf        
+        self.best_mean_reward = -np.inf
         self.worst_mean_reward = np.inf
 
     def _init_callback(self) -> None:
         # Create folders if needed
-        if self.best_save_path is not None:
-            os.makedirs(self.best_save_path, exist_ok=True)
-
-        if self.worst_save_path is not None:
-            os.makedirs(self.worst_save_path, exist_ok=True)
+        if self.save_path is not None:
+            os.makedirs(self.save_path, exist_ok=True)
 
         if self.checkpoint_save_path is not None:
             os.makedirs(self.checkpoint_save_path, exist_ok=True)
@@ -46,8 +45,6 @@ class CustomTrackingCallback(BaseCallback):
             os.makedirs(self.periodic_save_path, exist_ok=True)
 
     def _on_rollout_end(self) -> None:
-        
-        
 
         pass
 
@@ -55,43 +52,57 @@ class CustomTrackingCallback(BaseCallback):
         if self.n_calls % self.check_freq == 0:
 
             # Retrieve training reward
-            x, y = ts2xy(load_results(self.log_dir), 'timesteps')
+            x, y = ts2xy(load_results(self.log_dir), "timesteps")
             # this if basically stops from executing on 0th call
             if len(x) > 0:
                 # Mean training reward over the last 100 episodes
                 mean_reward = np.mean(y[-100:])
                 if self.verbose > 0:
                     print("Num timesteps: {}".format(self.num_timesteps))
-                    print("Best mean reward: {:.2f} - Last mean reward per episode: {:.2f}".format(self.best_mean_reward, mean_reward))
+                    print(
+                        "Best mean reward: {:.2f} - Last 100 episodes mean reward: {:.2f}".format(
+                            self.best_mean_reward, mean_reward
+                        )
+                    )
 
                 # New best model, you could save the agent here
                 if mean_reward > self.best_mean_reward:
                     self.best_mean_reward = mean_reward
                     # Example for saving best model
                     if self.verbose > 0:
-                        print("Saving new best model to {}".format(self.best_save_path))
-                    self.model.save(f"{self.best_save_path}/best")
+                        print("Saving new best model to {}".format(self.save_path))
+                    self.model.save(f"{self.save_path}/best")
+                    open(f"{self.save_path}/best.zip").close()
 
                 if mean_reward < self.worst_mean_reward:
                     self.worst_mean_reward = mean_reward
                     if self.verbose > 0:
-                        print("Saving new worst model to {}".format(self.worst_save_path))
-                    self.model.save(f"{self.worst_save_path}/worst")
+                        print("Saving new worst model to {}".format(self.save_path))
+                    self.model.save(f"{self.save_path}/worst")
+                    open(f"{self.save_path}/worst.zip").close()
 
                 if self.num_timesteps % 10000 == 0:
                     if self.verbose > 0:
-                        print("Saving periodic model to {}".format(self.periodic_save_path))
-                    self.model.save(f"{self.periodic_save_path}/ep_{self.num_timesteps}")
+                        print(
+                            "Saving periodic model to {}".format(
+                                self.periodic_save_path
+                            )
+                        )
+                    self.model.save(
+                        f"{self.periodic_save_path}/ep_{self.num_timesteps}"
+                    )
 
                 if ((self.start_time - time.time()) % 1200) <= 3:
                     self.model.save(f"{self.checkpoint_save_path}/continuation_point")
 
                 self.logger.record("custom/mean_ep_rwd", mean_reward)
-                # self.logger.record("", )
-                # self.logger.record("", )
-                # self.logger.record("", )
-                # self.logger.record("", )
-                # self.logger.record("", )
+                # self.logger.record("custom/", )
+                # self.logger.record("custom/", )
+                # self.logger.record("custom/", )
+                # self.logger.record("custom/", )
+                # self.logger.record("custom/", )
                 self.logger.dump(self.num_timesteps)
+
+            print("--------------------------")
 
         return True

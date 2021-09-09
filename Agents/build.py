@@ -1,5 +1,6 @@
 from genericpath import exists
 import os
+from torch import device, cuda
 from typing import Sequence
 
 from smarts.core.agent import AgentSpec
@@ -70,13 +71,19 @@ def build_algo(config, env):
 
     # tb_log_dir = os.path.join(config["log_dir"], "tb_run_logs")
     # os.makedirs(tb_log_dir, exist_ok=True)
-    tb_log_dir = None #replaced with custom logging using callback function
+    tb_log_dir = None  # replaced with custom logging using callback function
+
+    device_to_use = device("cuda" if cuda.is_available() else "cpu")
+    print("cuda available => ", cuda.is_available())
+    print("device => ", device_to_use)
 
     if config["load_path"] is not None:
         # .load :param env: the new environment to run the loaded model on
         # (can be None if you only need prediction from a trained model) has priority over any saved environment
         # XXX: must overwrite env otherwise tries to connect to dead envision server instance
-        model = ALGOS[config["algo"]].load(config["load"], env=env)  # env=None
+        model = ALGOS[config["algo"]].load(
+            config["load"], env=env, device=device_to_use
+        )  # env=None
 
         # reset tensorboard_log incase model wasn't initally created from cwd
         model.tensorboard_log = tb_log_dir
@@ -107,7 +114,8 @@ def build_algo(config, env):
             exploration_initial_eps=1.0,
             exploration_final_eps=0.1,
             policy_kwargs=dict(n_quantiles=50) if config["algo"] == "qrdqn" else None,
-            verbose=2,
+            device=device_to_use,
+            verbose=0,
         )
     elif config["algo"] == "ppo":
         # doesnt take the epsilon behaviour arguments for exploration
@@ -119,7 +127,8 @@ def build_algo(config, env):
             batch_size=config["batch_size"],
             tensorboard_log=tb_log_dir,
             policy_kwargs=None,
-            verbose=2,
+            device=device_to_use,
+            verbose=0,
             seed=config["seed"],
         )
     elif config["algo"] == "a2c":
@@ -131,7 +140,8 @@ def build_algo(config, env):
             n_steps=1024,
             tensorboard_log=tb_log_dir,
             policy_kwargs=None,
-            verbose=2,
+            device=device_to_use,
+            verbose=0,
             seed=config["seed"],
         )
     else:

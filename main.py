@@ -4,33 +4,43 @@ from stable_baselines3.common.monitor import Monitor
 
 # fixes below error
 # XXX: Error: mkl-service + Intel(R) MKL: MKL_THREADING_LAYER=INTEL is incompatible with libgomp-a34b3233.so.1 library.
-        # Try to import numpy first or set the threading layer accordingly. Set MKL_SERVICE_FORCE_INTEL to force it.
+# Try to import numpy first or set the threading layer accordingly. Set MKL_SERVICE_FORCE_INTEL to force it.
 import os
-os.environ['MKL_THREADING_LAYER'] = 'GNU'
-os.environ['MKL_SERVICE_FORCE_INTEL'] = "1"
+
+os.environ["MKL_THREADING_LAYER"] = "GNU"
+os.environ["MKL_SERVICE_FORCE_INTEL"] = "1"
 
 from Agents import build
 from Envs import build_env
 from custom_logging import CustomTrackingCallback
 
 
-def main(config):   
+def main(config):
 
     # monitor_path = os.path.join(, "Monitor_logs")
     os.makedirs(config["log_dir"], exist_ok=True)
     run_name = f'{config["algo"]}_seed{config["seed"]}_batchsize{config["batch_size"]}_{config["scenarios"][0].split("/")[1]}'
-    
-    env = Monitor(build_env(config), filename=os.path.join(config["log_dir"], f"{run_name}_monitor.csv"))
+
+    env = Monitor(
+        build_env(config),
+        filename=os.path.join(config["log_dir"], f"{run_name}_monitor.csv"),
+    )
 
     agent = build.build_algo(config, env=env)
 
     agent.learn(
         total_timesteps=config["n_timesteps"],
-        tb_log_name=f'{run_name}',
-        callback=CustomTrackingCallback(check_freq=100, log_dir=config["log_dir"], run_name=run_name, start_time =time.time(), verbose=1),
+        tb_log_name=f"{run_name}_logs",
+        callback=CustomTrackingCallback(
+            check_freq=1000,
+            log_dir=config["log_dir"],
+            run_name=run_name,
+            start_time=time.time(),
+            verbose=1,
+        ),
     )
 
-    agent.save(os.path.join(monitor_path, f'{run_name}_final'))
+    agent.save(os.path.join(config["log_dir"], f"{run_name}_final"))
 
 
 if __name__ == "__main__":
@@ -42,6 +52,7 @@ if __name__ == "__main__":
 
     ### expilict values for vscode debugger
     # from os import path
+
     # config = {
     #     "scenarios": ["Envs/ped_single"],
     #     "sim_name": None,
@@ -55,6 +66,8 @@ if __name__ == "__main__":
     #     "load_path": None,  # "Models/qrdqn256_ped_single",
     #     "log_dir": path.expanduser("~/paavi_logs/"),
     #     "n_timesteps": 1e6,
+    #     "record_path": None,
+    #     "her": False,
     # }
 
     main(config)
