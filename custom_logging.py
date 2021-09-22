@@ -60,7 +60,7 @@ class CustomTrackingCallback(BaseCallback):
                 if self.verbose > 0:
                     print("Num timesteps: {}".format(self.num_timesteps))
                     print(
-                        "Best mean reward: {:.2f} - Last 100 episodes mean reward: {:.2f}".format(
+                        "Best mean reward: {:.5f} - Last 100 episodes mean reward: {:.5f}".format(
                             self.best_mean_reward, mean_reward
                         )
                     )
