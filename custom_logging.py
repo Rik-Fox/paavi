@@ -18,17 +18,16 @@ class CustomTrackingCallback(BaseCallback):
     """
 
     def __init__(
-        self, check_freq: int, log_dir: str, run_name: str, start_time: float, verbose=1
+        self, check_freq: int, log_dir: str, start_time: float, verbose=1
     ):
         super(CustomTrackingCallback, self).__init__(verbose)
         self.check_freq = check_freq
-        self.log_dir = os.path.join(log_dir, run_name)
-        self.run_name = run_name
+        self.log_dir = log_dir
         self.start_time = start_time
 
-        self.save_path = os.path.join(log_dir, run_name)
-        self.checkpoint_save_path = os.path.join(log_dir, run_name, "checkpoint_model")
-        self.periodic_save_path = os.path.join(log_dir, run_name, "periodic_model")
+        self.save_path = log_dir
+        self.checkpoint_save_path = os.path.join(log_dir, "checkpoint_model")
+        self.periodic_save_path = os.path.join(log_dir, "periodic_model")
 
         self.best_mean_reward = -np.inf
         self.worst_mean_reward = np.inf

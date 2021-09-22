@@ -18,12 +18,13 @@ from custom_logging import CustomTrackingCallback
 def main(config):
 
     # monitor_path = os.path.join(, "Monitor_logs")
-    os.makedirs(config["log_dir"], exist_ok=True)
     run_name = f'{config["algo"]}_seed{config["seed"]}_batchsize{config["batch_size"]}_{config["scenarios"][-1].split("/")[1]}'
+    run_dir = os.path.join(config["log_dir"], f"{run_name}"),
+    os.makedirs(run_dir exist_ok=True)
 
     env = Monitor(
         build_env(config),
-        filename=os.path.join(config["log_dir"], f"{run_name}", "monitor.csv"),
+        filename=os.path.join(run_dir, "monitor.csv"),
     )
 
     agent = build.build_algo(config, env=env)
@@ -33,14 +34,13 @@ def main(config):
         tb_log_name=f"{run_name}_logs",
         callback=CustomTrackingCallback(
             check_freq=1000,
-            log_dir=config["log_dir"],
-            run_name=run_name,
+            log_dir=run_dir,
             start_time=time.time(),
             verbose=1,
         ),
     )
 
-    agent.save(os.path.join(config["log_dir"], f"{run_name}_final"))
+    agent.save(run_dir, "final")
 
 
 if __name__ == "__main__":
