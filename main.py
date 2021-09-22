@@ -19,11 +19,11 @@ def main(config):
 
     # monitor_path = os.path.join(, "Monitor_logs")
     os.makedirs(config["log_dir"], exist_ok=True)
-    run_name = f'{config["algo"]}_seed{config["seed"]}_batchsize{config["batch_size"]}_{config["scenarios"][0].split("/")[1]}'
+    run_name = f'{config["algo"]}_seed{config["seed"]}_batchsize{config["batch_size"]}_{config["scenarios"][-1].split("/")[1]}'
 
     env = Monitor(
         build_env(config),
-        filename=os.path.join(config["log_dir"], f"{run_name}_monitor.csv"),
+        filename=os.path.join(config["log_dir"], f"{run_name}", "monitor.csv"),
     )
 
     agent = build.build_algo(config, env=env)

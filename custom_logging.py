@@ -22,7 +22,7 @@ class CustomTrackingCallback(BaseCallback):
     ):
         super(CustomTrackingCallback, self).__init__(verbose)
         self.check_freq = check_freq
-        self.log_dir = log_dir
+        self.log_dir = os.path.join(log_dir, run_name)
         self.run_name = run_name
         self.start_time = start_time
 
