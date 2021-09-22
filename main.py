@@ -19,8 +19,8 @@ def main(config):
 
     # monitor_path = os.path.join(, "Monitor_logs")
     run_name = f'{config["algo"]}_seed{config["seed"]}_batchsize{config["batch_size"]}_{config["scenarios"][-1].split("/")[1]}'
-    run_dir = os.path.join(config["log_dir"], f"{run_name}"),
-    os.makedirs(run_dir exist_ok=True)
+    run_dir = os.path.join(config["log_dir"], run_name)
+    os.makedirs(run_dir, exist_ok=True)
 
     env = Monitor(
         build_env(config),
