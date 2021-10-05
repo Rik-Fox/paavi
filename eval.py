@@ -7,6 +7,7 @@ from Envs import build_env
 
 logging.basicConfig(level=logging.INFO)
 
+
 def eval(agent, env, num_episodes):
     # obs = env.reset()
     # while True:
@@ -14,6 +15,7 @@ def eval(agent, env, num_episodes):
     #     obs, rewards, dones, info = env.step(action)
     # env.render()
     import time
+
     time.sleep(5)
     for episode in episodes(n=num_episodes):
         # agents = {
@@ -43,19 +45,24 @@ def eval(agent, env, num_episodes):
 
 if __name__ == "__main__":
     from param_parsers import eval_parser
+    import os
+
     parser = eval_parser("eval_env")
 
     config = vars(parser.parse_args())
 
     env = build_env(config)
-    
+
     if config["load_path"] == None:
         from Agents import build
+
         model = build.build_algo(config, env)
     else:
         model = ALGOS[config["algo"]].load(config["load_path"], env=env)  # env=None
 
     # manually set tensorboard_log incase model wasn't initally logging there
     model.tensorboard_log = config["log_dir"]
+
+    os.makedirs(config["record_path"], exist_ok=True)
 
     eval(model, env, config["num_eps"])
