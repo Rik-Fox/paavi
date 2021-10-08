@@ -9,6 +9,8 @@ import os
 
 os.environ["MKL_THREADING_LAYER"] = "GNU"
 os.environ["MKL_SERVICE_FORCE_INTEL"] = "1"
+# to give access to scenarios for subprocesses
+# export PYTHONPATH="${PYTHONPATH}:/home/rfox/PhD/paavi"
 
 from Agents import build
 from Envs import build_env
@@ -18,7 +20,7 @@ from custom_logging import CustomTrackingCallback
 def main(config):
     # monitor_path = os.path.join(, "Monitor_logs")
     run_name = f'{config["algo"]}_seed{config["seed"]}_batchsize{config["batch_size"]}_{config["scenarios"][-1].split("/")[-1]}'
-    
+
     run_dir = os.path.join(config["log_dir"], run_name)
     os.makedirs(run_dir, exist_ok=True)
 

@@ -46,7 +46,8 @@ def build_agents(
             agent_ids, agent_types, agent_builders
         )
     }
-    # agent_spec.interface.vehicle_type = "motorcycle"
+    # need to create urdf for anything but "car" or "bus"
+    # agent_specs[agent_ids[0]].interface.vehicle_type = "motorcycle"
 
     return agent_specs
 
