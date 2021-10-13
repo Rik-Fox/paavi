@@ -2,6 +2,8 @@ from smarts.core.agent import Agent, AgentSpec
 from smarts.core.agent_interface import AgentInterface, AgentType
 from smarts.zoo.registry import register
 
+from Agents.agents import simple_agent
+
 
 class SimpleAgent(Agent):
     def act(self, obs):
@@ -9,10 +11,21 @@ class SimpleAgent(Agent):
 
 
 # You can register a callable that will build your AgentSpec
+def ped_agent_callable(target_prefix=None, interface=None, agent_params=None):
+    if interface is None:
+        interface = AgentInterface.from_type(AgentType.Imitation)
+    agent_spec = AgentSpec(
+        interface=interface, agent_builder=simple_agent, agent_params=agent_params
+    )
+    agent_spec.interface.vehicle_type = "pedestrian"
+    return agent_spec
+
+
 def demo_agent_callable(target_prefix=None, interface=None):
     if interface is None:
         interface = AgentInterface.from_type(AgentType.Laner)
-    return AgentSpec(interface=interface, agent_builder=SimpleAgent)
+    agent_spec = AgentSpec(interface=interface, agent_builder=SimpleAgent)
+    return agent_spec
 
 
 register(
@@ -26,6 +39,13 @@ register(
 register(
     locator="zoo-agent2-v0",
     entry_point=demo_agent_callable,
+    # Also works:
+    # entry_point="scenarios.zoo_intersection:demo_agent_callable",
+)
+
+register(
+    locator="zoo-pedAgent-v0",
+    entry_point=ped_agent_callable,
     # Also works:
     # entry_point="scenarios.zoo_intersection:demo_agent_callable",
 )

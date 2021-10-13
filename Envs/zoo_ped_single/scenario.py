@@ -23,6 +23,7 @@ from smarts.sstudio import (
 # )
 
 from smarts.sstudio import types as t
+from smarts.core.scenario import Mission, VehicleSpec
 
 from dataclasses import dataclass
 
@@ -102,9 +103,9 @@ traffic = t.Traffic(
 social_agent1 = t.SocialAgentActor(
     name="zoo-ped1",
     # agent_locator="Envs.zoo_ped_single.agent_prefabs:zoo-agent2-v0",
-    agent_locator="Envs.zoo_ped_single.agent_prefabs:zoo-agent2-v0",
-    # vehicle_type="pedestrian",
-    policy_kwargs={"vehicle_type": "pedestrian"},
+    agent_locator="Envs.zoo_ped_single.agent_prefabs:zoo-pedAgent-v0",
+    vehicle_type="pedestrian",
+    policy_kwargs={"agent_params": {"vehicle_type": "pedestrian"}},
     initial_speed=20,
 )
 # social_agent2 = t.SocialAgentActor(
@@ -144,13 +145,20 @@ ego_missions = [
     t.Mission(t.Route(begin=("WC", 1, 5), end=("CE", 1, "max")), start_time=0)
 ]
 
+social_missions = [
+    t.Mission(
+        t.Route(begin=("NC", 0, 5), end=("CS", 0, "max")),
+        # vehicle_spec={"vehicle_type": "pedestrian"},
+    )
+]
+
 scenario = t.Scenario(
-    traffic={"all": traffic},
+    # traffic={"all": traffic},
     ego_missions=ego_missions,
     social_agent_missions={
         f"s-agent-{social_agent1.name}": [
             [social_agent1],
-            [t.Mission(t.Route(begin=("NC", 0, 5), end=("CS", 0, "max")))],
+            social_missions,
         ]
     },
 )

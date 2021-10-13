@@ -2,14 +2,17 @@ import os
 import time
 from stable_baselines3.common.monitor import Monitor
 
-# fixes below error
-# XXX: Error: mkl-service + Intel(R) MKL: MKL_THREADING_LAYER=INTEL is incompatible with libgomp-a34b3233.so.1 library.
-# Try to import numpy first or set the threading layer accordingly. Set MKL_SERVICE_FORCE_INTEL to force it.
-import os
+import sys
 
+sys.settrace
+
+# Try to import numpy first or set the threading layer accordingly. Set MKL_SERVICE_FORCE_INTEL to force it.
 os.environ["MKL_THREADING_LAYER"] = "GNU"
 os.environ["MKL_SERVICE_FORCE_INTEL"] = "1"
-# to give access to scenarios for subprocesses
+# fixes below error
+# XXX: Error: mkl-service + Intel(R) MKL: MKL_THREADING_LAYER=INTEL is incompatible with libgomp-a34b3233.so.1 library.
+
+# to give access to scenarios for subprocesses, maybe fixed now
 # export PYTHONPATH="${PYTHONPATH}:/home/rfox/PhD/paavi"
 
 from Agents import build
@@ -53,12 +56,11 @@ if __name__ == "__main__":
     config = vars(parser.parse_args())
 
     ### expilict values for vscode debugger
-    # from os import path
 
     # config = {
-    #     "scenarios": ["Envs/ped_single"],
+    #     "scenarios": ["Envs/zoo_ped_single"],
     #     "sim_name": None,
-    #     "headless": True,
+    #     "headless": False,
     #     "num_episodes": 3,
     #     "seed": 42,
     #     "algo": "qrdqn",
@@ -66,10 +68,11 @@ if __name__ == "__main__":
     #     "buffer_size": 1024,
     #     "batch_size": 256,
     #     "load_path": None,  # "Models/qrdqn256_ped_single",
-    #     "log_dir": path.expanduser("~/paavi_logs/"),
+    #     "log_dir": os.path.expanduser("~/paavi_logs/"),
     #     "n_timesteps": 1e6,
     #     "record_path": None,
     #     "her": False,
+    #     "buffer_fill_period": 1e4,
     # }
 
     main(config)

@@ -17,9 +17,20 @@ import cloudpickle
 # with open("cloudpickle_test.pkl", "w") as f:
 #     cloudpickle.dump([agent], f)
 
-cloudpickle.dumps(agent)
+# cloudpickle.dumps(agent)
 
-loaded_obj = cloudpickle.loads("cloudpickle_test.pkl")
+with open(
+    "/home/rfox/PhD/paavi/Envs/zoo_ped_single/social_agents/s-agent-zoo-ped1.pkl", "rb"
+) as f:
+    agent = cloudpickle.load(f)
+
+f.close()
+
+# loaded_agent_act = cloudpickle.loads(agent)
+
+import pdb
+
+pdb.set_trace()
 
 print(loaded_obj)
 

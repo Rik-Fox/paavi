@@ -4,6 +4,7 @@ from smarts.core.sensors import Observation
 import numpy as np
 from gym import spaces
 
+
 #     * `ActionSpaceType.Continuous`: continuous action space with throttle, brake, absolute steering angle.
 # It is a tuple of `throttle` [0, 1], `brake` [0, 1], and `steering` [-1, 1].
 
@@ -152,13 +153,16 @@ class simple_agent(Agent):
     OBSERVATION_SPACE = spaces.Box(0.0, np.inf, shape=(5,))
     ACTION_SPACE = spaces.Discrete(4)
 
-    def __init__(self) -> None:
+    def __init__(self, vehicle_type="passenger") -> None:
         super().__init__()
+        self.vehicle_type = vehicle_type
 
     def act(self, obs: Observation):
-        print(
-            f"{simple_agent} -> I'm not acting, as a learning model should be acting for me"
-        )
+        # acceleration is scalar in m/s^2, angular_velocity is scalar in rad/s
+        # acceleration is in the direction of the heading only.
+        a = np.random.rand() * 2
+        theta = np.random.rand() * 2 * np.pi
+        return [a, theta]
 
     def observation_adaptor(env_obs: Observation):
         return np.hstack(
