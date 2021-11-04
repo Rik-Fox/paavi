@@ -148,6 +148,33 @@ class ChaseViaPointsAgent(Agent):  # LanerWithSpeed
     #     return self.action
 
 
+class ped_agent(Agent):
+
+    OBSERVATION_SPACE = spaces.Box(0.0, np.inf, shape=(5,))
+    ACTION_SPACE = spaces.Discrete(4)
+
+    def __init__(self, vehicle_type="pedestrian") -> None:
+        super().__init__()
+        self.vehicle_type = vehicle_type
+
+    def act(self, obs: Observation):
+        # acceleration is scalar in m/s^2, angular_velocity is scalar in rad/s
+        # acceleration is in the direction of the heading only.
+        a = np.random.rand() * 2
+        theta = ((np.random.rand() * 2 * np.pi) - np.pi) / 8
+        # theta = 0
+        return [a, theta]
+
+    def observation_adaptor(env_obs: Observation):
+        return np.hstack(
+            [
+                np.array(env_obs.ego_vehicle_state.position),
+                np.array(env_obs.ego_vehicle_state.speed),
+                np.array(env_obs.ego_vehicle_state.lane_index),
+            ]
+        )
+
+
 class simple_agent(Agent):
 
     OBSERVATION_SPACE = spaces.Box(0.0, np.inf, shape=(5,))
@@ -158,11 +185,7 @@ class simple_agent(Agent):
         self.vehicle_type = vehicle_type
 
     def act(self, obs: Observation):
-        # acceleration is scalar in m/s^2, angular_velocity is scalar in rad/s
-        # acceleration is in the direction of the heading only.
-        a = np.random.rand() * 2
-        theta = np.random.rand() * 2 * np.pi
-        return [a, theta]
+        print("should have a learning model that wraps this act -> no action taken")
 
     def observation_adaptor(env_obs: Observation):
         return np.hstack(

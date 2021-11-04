@@ -165,6 +165,10 @@ class sb3HiWayEnv(HiWayEnv):
 
         raw_observations, raw_rewards, raw_dones, raw_infos = super().step(action_dict)
 
+        # import pdb
+
+        # pdb.set_trace()
+
         if isinstance(self.observation_space, spaces.Box):
             if len(self.agent_keys) == 1:
                 observations = raw_observations[self.agent_keys[0]]
@@ -185,7 +189,7 @@ class sb3HiWayEnv(HiWayEnv):
         #         ]
         #     )
 
-        return observations, rewards, raw_dones, raw_infos
+        return observations, rewards, dones, raw_infos
 
     def render(self, mode):
         return super().render(mode=mode)

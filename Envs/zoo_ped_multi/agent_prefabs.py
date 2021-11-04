@@ -14,7 +14,9 @@ class SimpleAgent(Agent):
 def ped_agent_callable(target_prefix=None, interface=None, agent_params=None):
     if interface is None:
         interface = AgentInterface.from_type(
-            AgentType.Imitation, vehicle_type=agent_params["vehicle_type"]
+            AgentType.Imitation,
+            vehicle_type=agent_params["vehicle_type"],
+            done_criteria=agent_params["done_criteria"],
         )
     agent_spec = AgentSpec(interface=interface, agent_builder=ped_agent)
     agent_spec.interface.vehicle_type = "pedestrian"

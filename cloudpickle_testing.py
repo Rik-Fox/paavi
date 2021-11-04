@@ -20,7 +20,9 @@ import cloudpickle
 # cloudpickle.dumps(agent)
 
 with open(
-    "/home/rfox/PhD/paavi/Envs/zoo_ped_single/social_agents/s-agent-zoo-ped1.pkl", "rb"
+    # "/home/rfox/PhD/paavi/Envs/zoo_ped_single/social_agents/s-agent-zoo-ped1.pkl", "rb"
+    "/home/rfox/PhD/paavi/Envs/zoo_ped_single/missions.pkl",
+    "rb",
 ) as f:
     agent = cloudpickle.load(f)
 

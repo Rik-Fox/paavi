@@ -75,6 +75,7 @@ def build_algo(config, env):
     # tb_log_dir = None  # replaced with custom logging using callback function
 
     device_to_use = device("cuda" if cuda.is_available() else "cpu")
+    # device_to_use = "cpu"
     print("cuda available => ", cuda.is_available())
     print("device => ", device_to_use)
 

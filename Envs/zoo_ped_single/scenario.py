@@ -23,7 +23,6 @@ from smarts.sstudio import (
 # )
 
 from smarts.sstudio import types as t
-from smarts.core.scenario import Mission, VehicleSpec
 
 from dataclasses import dataclass
 
@@ -101,7 +100,7 @@ traffic = t.Traffic(
 
 
 social_agent1 = t.SocialAgentActor(
-    name="zoo-ped1",
+    name="pedA",
     # agent_locator="Envs.zoo_ped_single.agent_prefabs:zoo-agent2-v0",
     agent_locator="Envs.zoo_ped_single.agent_prefabs:zoo-pedAgent-v0",
     vehicle_type="pedestrian",
@@ -156,7 +155,7 @@ scenario = t.Scenario(
     # traffic={"all": traffic},
     ego_missions=ego_missions,
     social_agent_missions={
-        f"s-agent-{social_agent1.name}": [
+        f"1": [
             [social_agent1],
             social_missions,
         ]
