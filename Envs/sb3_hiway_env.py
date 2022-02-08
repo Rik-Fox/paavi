@@ -158,7 +158,7 @@ class sb3HiWayEnv(HiWayEnv):
             else:
                 action_dict = {}
                 for i, agent_key in enumerate(self.agent_keys):
-                    action_dict[agent_key] = self.actions[agent_actions[i]]
+                    action_dict[agent_key] = agent_actions[i]
                 # print(agent_actions, type(agent_actions), isinstance(agent_actions, np.int64))
         else:
             raise NotImplementedError
@@ -167,9 +167,14 @@ class sb3HiWayEnv(HiWayEnv):
 
         if isinstance(self.observation_space, spaces.Box):
             if len(self.agent_keys) == 1:
-                observations = raw_observations[self.agent_keys[0]]
-                rewards = raw_rewards[self.agent_keys[0]]
-                dones = raw_dones[self.agent_keys[0]]
+                try:
+                    observations = raw_observations[self.agent_keys[0]]
+                    rewards = raw_rewards[self.agent_keys[0]]
+                    dones = raw_dones[self.agent_keys[0]]
+                except KeyError:
+                    observations = raw_observations
+                    rewards = raw_rewards
+                    dones = raw_dones
             else:
                 raise NotImplementedError
         else:
@@ -185,7 +190,10 @@ class sb3HiWayEnv(HiWayEnv):
         #         ]
         #     )
 
-        return observations, rewards, raw_dones, raw_infos
+        return observations, rewards, dones, raw_infos
+
+    def render(self, mode):
+        return super().render(mode=mode)
 
     # strips observations out of dict from smarts
     def reset(self):
@@ -193,8 +201,8 @@ class sb3HiWayEnv(HiWayEnv):
         observations = super().reset()
 
         ## memory error at ~10000 for with about 200GB of space if these logs not deleted
-        sumo_logs = os.path.expanduser("~/.smarts/_sumo_run_logs/")
-        if os.path.exists(sumo_logs):
-            shutil.rmtree(sumo_logs, ignore_errors=True)
+        # sumo_logs = os.path.expanduser("~/.smarts/_sumo_run_logs/")
+        # if os.path.exists(sumo_logs):
+        #     shutil.rmtree(sumo_logs, ignore_errors=True)
 
         return np.hstack([observations[key] for key in self.agent_keys])

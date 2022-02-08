@@ -2,6 +2,7 @@ from gym.envs.registration import register
 from gym import make
 
 from smarts.core.agent_interface import AgentType
+from smarts.core.agent_interface import AgentInterface, AgentType
 
 from Agents import agents, build
 
@@ -10,17 +11,27 @@ register(
     entry_point="Envs.sb3_hiway_env:sb3HiWayEnv",
 )
 
-def build_env(config):
+
+def build_env(config, **kwargs):
 
     AGENT_IDS = ["Agent-007"]  #    ["Agent-007", "Agent-009"]
-    AGENT_TYPES = [AgentType.Laner]
-    AGENT_BUILDERS = [agents.simple_agent]
+    if "vehicle_type" in kwargs:
+        AGENT_TYPES = (
+            [AgentType.Imitation]
+            if kwargs["vehicle_type"] == "pedestrian"
+            else [AgentType.Laner]
+        )
+        AGENT_BUILDERS = (
+            [agents.HumanKeyboardAgent]
+            if kwargs["vehicle_type"] == "pedestrian"
+            else [agents.random_agent]
+        )
+    else:
+        AGENT_TYPES = [AgentType.Laner]
+        AGENT_BUILDERS = [agents.random_agent]
 
     config["agent_specs"] = build.build_agents(
-        AGENT_IDS,
-        AGENT_TYPES,
-        AGENT_BUILDERS,
-        # max_episode_steps=config["max_episode_steps"],
+        AGENT_IDS, AGENT_TYPES, AGENT_BUILDERS, **kwargs
     )
 
     # if config["load_path"] is None:
@@ -41,8 +52,9 @@ def build_env(config):
         sumo_port=None,
         sumo_auto_start=True,
         endless_traffic=True,
+        # envision_endpoint="ws://localhost:8080/simulations",  # dev server
         envision_endpoint=None,
-        envision_record_data_replay_path=None,
+        envision_record_data_replay_path=config["record_path"],
         zoo_addrs=None,
     )
     # else:

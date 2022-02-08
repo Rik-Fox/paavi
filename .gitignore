@@ -142,3 +142,5 @@ Models/*.zip
 
 #singularity containers/images
 *.sif
+
+.history/

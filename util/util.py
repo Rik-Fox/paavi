@@ -1,8 +1,8 @@
+import argparse
+
 #################################
 # Pulled from rl-baselines3-zoo #
 #################################
-
-import argparse
 
 
 class StoreDict(argparse.Action):

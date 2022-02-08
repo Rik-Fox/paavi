@@ -4,6 +4,7 @@ from smarts.core.sensors import Observation
 import numpy as np
 from gym import spaces
 
+
 #     * `ActionSpaceType.Continuous`: continuous action space with throttle, brake, absolute steering angle.
 # It is a tuple of `throttle` [0, 1], `brake` [0, 1], and `steering` [-1, 1].
 
@@ -61,7 +62,7 @@ from gym import spaces
 
 class KeepLaneAgent(Agent):  # Laner
     def act(self, obs):
-        return "keep_lane"
+        return 0  # "keep_lane" is this index in discrete actionspace of new env
 
 
 class ChaseViaPointsAgent(Agent):  # LanerWithSpeed
@@ -81,70 +82,116 @@ class ChaseViaPointsAgent(Agent):  # LanerWithSpeed
             1 if nearest.lane_index > obs.ego_vehicle_state.lane_index else -1,
         )
 
-    # from pynput.keyboard import Key, Listener
 
-    # class HumanKeyboardAgent(Agent):  # StandardWithAbsoluteSteering
-    #     def __init__(self):
-    #         # initialize the keyboard listener
-    #         self.listener = Listener(on_press=self.on_press)
-    #         self.listener.start()
+from pynput.keyboard import Key, Listener
 
-    #         # Parameters for the human-keyboard agent
-    #         # you need to change them to suit the scenario
-    #         # These values work the best with zoo_intersection
 
-    #         self.INC_THROT = 0.01
-    #         self.INC_STEER = 5.0
+class HumanKeyboardAgent(Agent):  # StandardWithAbsoluteSteering
 
-    #         self.MAX_THROTTLE = 0.6
-    #         self.MIN_THROTTLE = 0.45
+    OBSERVATION_SPACE = spaces.Box(0.0, np.inf, shape=(5,))
+    ACTION_SPACE = spaces.Discrete(4)  # this is a lie, needs correcting
 
-    #         self.MAX_BRAKE = 1.0
-    #         self.MIN_BRAKE = 0.0
+    def __init__(self, vehicle_type="pedestrian") -> None:
+        super().__init__()
+        self.vehicle_type = vehicle_type
 
-    #         self.MAX_STEERING = 1.0
-    #         self.MIN_STEERING = -1.0
+        # initialize the keyboard listener
+        self.listener = Listener(on_press=self.on_press)
+        self.listener.start()
 
-    #         self.THROTTLE_DISCOUNTING = 0.99
-    #         self.BRAKE_DISCOUNTING = 0.95
-    #         self.STEERING_DISCOUNTING = 0.9
+        # Parameters for the human-keyboard agent
+        # you need to change them to suit the scenario
 
-    #         # initial values
-    #         self.steering_angle = 0.0
-    #         self.throttle = 0.48
-    #         self.brake = 0.0
+        self.INC_ACCEL = 1.0
+        self.INC_STEER = np.pi / 4
 
-    # def on_press(self, key):
-    #     """To control, use the keys:
-    #     Up: to increase the throttle
-    #     Left Alt: to increase the brake
-    #     Left: to decrease the steering angle
-    #     Right: to increase the steering angle
-    #     """
+        self.MAX_ACCEL = 5.0
+        self.MIN_ACCEL = -5.0
 
-    #     if key == Key.up:
-    #         self.throttle = min(self.throttle + self.INC_THROT, self.MAX_THROTTLE)
-    #     elif key == Key.alt_l:
-    #         self.brake = min(self.brake + 10.0 * self.INC_THROT, self.MAX_BRAKE)
-    #     elif key == Key.right:
-    #         self.steering_angle = min(
-    #             self.steering_angle + self.INC_STEER, self.MAX_STEERING
-    #         )
-    #     elif key == Key.left:
-    #         self.steering_angle = max(
-    #             self.steering_angle - self.INC_STEER, self.MIN_STEERING
-    #         )
+        # self.MAX_BRAKE = 1.0
+        # self.MIN_BRAKE = 0.0
 
-    # def act(self, obs):
-    #     # discounting ..
-    #     self.throttle = max(
-    #         self.throttle * self.THROTTLE_DISCOUNTING, self.MIN_THROTTLE
-    #     )
-    #     self.steering_angle = self.steering_angle * self.STEERING_DISCOUNTING
-    #     self.brake = self.brake * self.BRAKE_DISCOUNTING
-    #     # send the action
-    #     self.action = [self.throttle, self.brake, self.steering_angle]
-    #     return self.action
+        self.MAX_STEERING = np.pi
+        self.MIN_STEERING = -np.pi
+
+        # self.THROTTLE_DISCOUNTING = 0.99
+        # self.BRAKE_DISCOUNTING = 0.95
+        # self.STEERING_DISCOUNTING = 0.9
+
+        # initial values
+        self.steering_angle = 0.0
+        self.accel = 0.0
+        # self.brake = 0.0
+
+    def on_press(self, key):
+        """To control, use the keys:
+        Up: to increase the throttle
+        Down: to increase the brake
+        Left: to decrease the steering angle
+        Right: to increase the steering angle
+        """
+
+        if key == Key.up:
+            self.accel = min(self.accel + self.INC_ACCEL, self.MAX_ACCEL)
+        elif key == Key.down:
+            self.accel = max(self.accel - self.INC_ACCEL, self.MIN_ACCEL)
+        elif key == Key.right:
+            self.steering_angle = max(
+                self.steering_angle + self.INC_STEER, self.MAX_STEERING
+            )
+        elif key == Key.left:
+            self.steering_angle = min(
+                self.steering_angle - self.INC_STEER, self.MIN_STEERING
+            )
+
+    def act(self, obs):
+        # discounting ..
+        self.accel = max(self.accel, self.MIN_ACCEL)  # * self.THROTTLE_DISCOUNTING
+        self.steering_angle = self.steering_angle  # * self.STEERING_DISCOUNTING
+        # self.brake = self.brake * self.BRAKE_DISCOUNTING
+        # send the action
+        # print(self.accel)
+        self.action = [self.accel, self.steering_angle]
+        # reset steering angle, otherise will constantly turn in circles
+        self.steering_angle = 0
+
+        return self.action
+
+    def observation_adaptor(env_obs: Observation):
+        return np.hstack(
+            [
+                np.array(env_obs.ego_vehicle_state.position),
+                np.array(env_obs.ego_vehicle_state.speed),
+                np.array(env_obs.ego_vehicle_state.lane_index),
+            ]
+        )
+
+
+class PedAgent(Agent):
+
+    OBSERVATION_SPACE = spaces.Box(0.0, np.inf, shape=(5,))
+    ACTION_SPACE = spaces.Discrete(4)
+
+    def __init__(self, vehicle_type="pedestrian") -> None:
+        super().__init__()
+        self.vehicle_type = vehicle_type
+
+    def act(self, obs: Observation):
+        # acceleration is scalar in m/s^2, angular_velocity is scalar in rad/s
+        # acceleration is in the direction of the heading only.
+        a = np.random.rand() * 2
+        theta = ((np.random.rand() * 2 * np.pi) - np.pi) / 8
+        # theta = 0
+        return [a, theta]
+
+    def observation_adaptor(env_obs: Observation):
+        return np.hstack(
+            [
+                np.array(env_obs.ego_vehicle_state.position),
+                np.array(env_obs.ego_vehicle_state.speed),
+                np.array(env_obs.ego_vehicle_state.lane_index),
+            ]
+        )
 
 
 class simple_agent(Agent):
@@ -152,13 +199,34 @@ class simple_agent(Agent):
     OBSERVATION_SPACE = spaces.Box(0.0, np.inf, shape=(5,))
     ACTION_SPACE = spaces.Discrete(4)
 
-    def __init__(self) -> None:
+    def __init__(self, vehicle_type="passenger") -> None:
         super().__init__()
+        self.vehicle_type = vehicle_type
 
     def act(self, obs: Observation):
-        print(
-            f"{simple_agent} -> I'm not acting, as a learning model should be acting for me"
+        print("should have a learning model that wraps this act -> no action taken")
+
+    def observation_adaptor(env_obs: Observation):
+        return np.hstack(
+            [
+                np.array(env_obs.ego_vehicle_state.position),
+                np.array(env_obs.ego_vehicle_state.speed),
+                np.array(env_obs.ego_vehicle_state.lane_index),
+            ]
         )
+
+
+class random_agent(Agent):
+
+    OBSERVATION_SPACE = spaces.Box(0.0, np.inf, shape=(5,))
+    ACTION_SPACE = spaces.Discrete(4)
+
+    def __init__(self, vehicle_type="passenger") -> None:
+        super().__init__()
+        self.vehicle_type = vehicle_type
+
+    def act(self, obs: Observation):
+        return np.random.choice([0, 1, 2, 3])
 
     def observation_adaptor(env_obs: Observation):
         return np.hstack(
