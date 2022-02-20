@@ -28,7 +28,7 @@ def build_env(config, **kwargs):
         )
     else:
         AGENT_TYPES = [AgentType.Laner]
-        AGENT_BUILDERS = [agents.random_agent]
+        AGENT_BUILDERS = [agents.simple_agent]
 
     config["agent_specs"] = build.build_agents(
         AGENT_IDS, AGENT_TYPES, AGENT_BUILDERS, **kwargs

@@ -20,7 +20,6 @@ os.environ["MKL_SERVICE_FORCE_INTEL"] = "1"
 from Agents import build
 from Envs import build_env
 from custom_logging import CustomTrackingCallback
-from browser import Browser
 
 
 def main(config):
@@ -38,39 +37,18 @@ def main(config):
 
     agent = build.build_algo(config, env=env)
 
-    chrome = Browser(config["envision_port"])
+    agent.learn(
+        total_timesteps=config["n_timesteps"],
+        tb_log_name=f"{run_name}_logs",
+        callback=CustomTrackingCallback(
+            check_freq=1000,
+            log_dir=run_dir,
+            start_time=time.time(),
+            verbose=1,
+        ),
+    )
 
-    for episode in episodes(n=config["episodes"]):
-        agent_obs = env.reset()
-        # episode.record_scenario(env.scenario_log)
-        # import pdb
-
-        # pdb.set_trace()
-        # print(env.env._smarts._envision.endpoint)
-
-        # dones = False
-        # while not dones:
-        for i in range(int(config["max_episode_steps"])):
-            agent_action, _ = agent.predict(agent_obs, deterministic=False)
-            agent_obs, rewards, dones, infos = env.step(agent_action)
-            # episode.record_step(agent_obs, rewards, dones, infos)
-            # print("episode => ", episode.index, " : step => ", i)
-
-            while chrome.get_paused():
-                chrome.get_paused()
-
-    # agent.learn(
-    #     total_timesteps=config["n_timesteps"],
-    #     tb_log_name=f"{run_name}_logs",
-    #     callback=CustomTrackingCallback(
-    #         check_freq=1000,
-    #         log_dir=run_dir,
-    #         start_time=time.time(),
-    #         verbose=1,
-    #     ),
-    # )
-
-    # agent.save(run_dir, "final")
+    agent.save(run_dir, "final")
 
 
 if __name__ == "__main__":
