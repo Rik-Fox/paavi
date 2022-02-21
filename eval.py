@@ -44,7 +44,7 @@ def eval(agent, env, num_episodes):
 
 
 if __name__ == "__main__":
-    from param_parsers import eval_parser
+    from paavi.util.param_parsers import eval_parser
     import os
 
     parser = eval_parser("eval_env")

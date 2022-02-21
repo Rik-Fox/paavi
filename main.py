@@ -17,9 +17,9 @@ os.environ["MKL_SERVICE_FORCE_INTEL"] = "1"
 # to give access to scenarios for subprocesses, maybe fixed now
 # export PYTHONPATH="${PYTHONPATH}:/home/rfox/PhD/paavi"
 
-from Agents import build
-from Envs import build_env
-from custom_logging import CustomTrackingCallback
+from paavi.Agents.build import build_algo
+from paavi.Envs import build_env
+from paavi.util.custom_logging import CustomTrackingCallback
 
 
 def main(config):
@@ -35,7 +35,7 @@ def main(config):
         filename=os.path.join(run_dir, "monitor.csv"),
     )
 
-    agent = build.build_algo(config, env=env)
+    agent = build_algo(config, env=env)
 
     agent.learn(
         total_timesteps=config["n_timesteps"],
@@ -52,7 +52,7 @@ def main(config):
 
 
 if __name__ == "__main__":
-    from param_parsers import trainer_parser
+    from paavi.util.param_parsers import trainer_parser
 
     parser = trainer_parser("single-agent-experiment")
 

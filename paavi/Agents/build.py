@@ -6,7 +6,7 @@ from typing import Sequence
 from smarts.core.agent import AgentSpec
 from smarts.core.agent_interface import AgentType, AgentInterface
 
-from Agents import ALGOS
+from paavi.Agents import ALGOS
 
 
 def build_agents(

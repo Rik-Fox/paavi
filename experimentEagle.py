@@ -20,8 +20,8 @@ os.environ["MKL_SERVICE_FORCE_INTEL"] = "1"
 from Agents.agents import HumanKeyboardAgent, random_agent, PedAgent
 from Envs import build_env
 from smarts.core.agent_interface import DoneCriteria
-from custom_logging import CustomTrackingCallback
-from browser import Browser
+from paavi.util.custom_logging import CustomTrackingCallback
+from paavi.util.browser import Browser
 
 
 def main(config):
@@ -65,7 +65,7 @@ def main(config):
 
 if __name__ == "__main__":
 
-    from param_parsers import trainer_parser
+    from paavi.util.param_parsers import trainer_parser
 
     parser = trainer_parser("single-agent-experiment")
     config = vars(parser.parse_args())

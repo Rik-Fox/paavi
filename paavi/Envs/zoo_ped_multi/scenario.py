@@ -116,7 +116,7 @@ social_agents = [
     t.SocialAgentActor(
         name=f"pedA{i}",
         # agent_locator="Envs.zoo_ped_single.agent_prefabs:zoo-agent2-v0",
-        agent_locator="Envs.zoo_ped_multi.agent_prefabs:zoo-pedAgent-v0",
+        agent_locator="paavi.Envs.zoo_ped_multi.agent_prefabs:zoo-pedAgent-v0",
         vehicle_type="pedestrian",
         policy_kwargs={
             "agent_params": {
