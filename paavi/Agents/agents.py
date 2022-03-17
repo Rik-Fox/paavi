@@ -82,8 +82,11 @@ class ChaseViaPointsAgent(Agent):  # LanerWithSpeed
             1 if nearest.lane_index > obs.ego_vehicle_state.lane_index else -1,
         )
 
-
-from pynput.keyboard import Key, Listener
+try:
+    from pynput.keyboard import Key, Listener
+except ImportError:
+    # print("no keyboard agent as running headless")
+    pass
 
 
 class HumanKeyboardAgent(Agent):  # StandardWithAbsoluteSteering

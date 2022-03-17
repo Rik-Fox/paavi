@@ -116,7 +116,7 @@ social_agents = [
     t.SocialAgentActor(
         name=f"pedA{i}",
         # agent_locator="Envs.zoo_ped_single.agent_prefabs:zoo-agent2-v0",
-        agent_locator="Envs.zoo_ped_multi.agent_prefabs:zoo-pedAgent-v0",
+        agent_locator="paavi.Envs.zoo_ped_multi.agent_prefabs:zoo-pedAgent-v0",
         vehicle_type="pedestrian",
         policy_kwargs={
             "agent_params": {
@@ -136,37 +136,37 @@ social_agents = [
     for i in range(len(social_missions))
 ]
 # human agent specs
-social_missions.append(
-    t.Mission(
-        t.Route(begin=("SC", 0, 30), end=("CN", 0, "max")),
-        start_time=0
-        # vehicle_spec={"vehicle_type": "pedestrian"},
-    ),
-)
+# social_missions.append(
+#     t.Mission(
+#         t.Route(begin=("SC", 0, 30), end=("CN", 0, "max")),
+#         start_time=0
+#         # vehicle_spec={"vehicle_type": "pedestrian"},
+#     ),
+# )
 
-social_agents.append(
-    t.SocialAgentActor(
-        name=f"pedA{i}",
-        # agent_locator="Envs.zoo_ped_single.agent_prefabs:zoo-agent2-v0",
-        agent_locator="Envs.zoo_ped_multi.agent_prefabs:HumanAgent-v0",
-        vehicle_type="pedestrian",
-        policy_kwargs={
-            "agent_params": {
-                "vehicle_type": "pedestrian",
-                "done_criteria": DoneCriteria(
-                    collision=False,
-                    off_road=True,
-                    off_route=False,
-                    on_shoulder=False,
-                    wrong_way=False,
-                    not_moving=False,
-                ),
-            }
-        },
-        # dont move until told
-        initial_speed=1,
-    )
-)
+# social_agents.append(
+#     t.SocialAgentActor(
+#         name=f"pedA{i}",
+#         # agent_locator="Envs.zoo_ped_single.agent_prefabs:zoo-agent2-v0",
+#         agent_locator="Envs.zoo_ped_multi.agent_prefabs:HumanAgent-v0",
+#         vehicle_type="pedestrian",
+#         policy_kwargs={
+#             "agent_params": {
+#                 "vehicle_type": "pedestrian",
+#                 "done_criteria": DoneCriteria(
+#                     collision=False,
+#                     off_road=True,
+#                     off_route=False,
+#                     on_shoulder=False,
+#                     wrong_way=False,
+#                     not_moving=False,
+#                 ),
+#             }
+#         },
+#         # dont move until told
+#         initial_speed=1,
+#     )
+# )
 
 social_agent_missions = {}
 

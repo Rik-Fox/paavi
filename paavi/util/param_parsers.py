@@ -1,8 +1,8 @@
 ## take parser args from SMARTS examples then add args from both zoo's train.py and custom defined
 import argparse
 from os import path
-from util.util import StoreDict
-from Agents import ALGOS
+from paavi.util.util import StoreDict
+from paavi.Agents import ALGOS
 
 
 def default_argument_parser(program: str):

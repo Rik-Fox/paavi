@@ -4,11 +4,11 @@ from gym import make
 from smarts.core.agent_interface import AgentType
 from smarts.core.agent_interface import AgentInterface, AgentType
 
-from Agents import agents, build
+from paavi.Agents import agents, build
 
 register(
     id="sb3hiway-v0",
-    entry_point="Envs.sb3_hiway_env:sb3HiWayEnv",
+    entry_point="paavi.Envs.sb3_hiway_env:sb3HiWayEnv",
 )
 
 
@@ -28,7 +28,7 @@ def build_env(config, **kwargs):
         )
     else:
         AGENT_TYPES = [AgentType.Laner]
-        AGENT_BUILDERS = [agents.random_agent]
+        AGENT_BUILDERS = [agents.simple_agent]
 
     config["agent_specs"] = build.build_agents(
         AGENT_IDS, AGENT_TYPES, AGENT_BUILDERS, **kwargs
@@ -38,7 +38,7 @@ def build_env(config, **kwargs):
 
     env = make(
         # "smarts.env:hiway-v0",
-        "Envs:sb3hiway-v0",
+        "paavi.Envs:sb3hiway-v0",
         scenarios=config["scenarios"],
         agent_specs=config["agent_specs"],
         sim_name=config["sim_name"],

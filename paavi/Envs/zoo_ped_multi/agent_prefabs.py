@@ -2,7 +2,7 @@ from smarts.core.agent import Agent, AgentSpec
 from smarts.core.agent_interface import AgentInterface, AgentType
 from smarts.zoo.registry import register
 
-from Agents.agents import PedAgent, HumanKeyboardAgent
+from paavi.Agents.agents import PedAgent, HumanKeyboardAgent
 
 
 class SimpleAgent(Agent):
