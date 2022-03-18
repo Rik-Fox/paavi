@@ -17,8 +17,8 @@ os.environ["MKL_SERVICE_FORCE_INTEL"] = "1"
 # export PYTHONPATH="${PYTHONPATH}:/home/rfox/PhD/paavi"
 
 # from Agents import build
-from Agents.agents import HumanKeyboardAgent, random_agent, PedAgent
-from Envs import build_env
+from paavi.Agents.agents import HumanKeyboardAgent, random_agent, PedAgent
+from paavi.Envs import build_env
 from smarts.core.agent_interface import DoneCriteria
 from paavi.util.custom_logging import CustomTrackingCallback
 from paavi.util.browser import Browser
