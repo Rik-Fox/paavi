@@ -1,4 +1,5 @@
 import logging
+import numpy as np
 
 from smarts.core.utils.episodes import episodes
 
@@ -7,42 +8,51 @@ from paavi.Envs import build_env
 
 logging.basicConfig(level=logging.INFO)
 
+def closeset_ped_dist(env):
+    ped_obs, _, _, _ = env._smarts._agent_manager.observe(env._smarts)
 
-def eval(agent, env, num_episodes):
-    # obs = env.reset()
-    # while True:
-    #     action, _states = model.predict(obs)
-    #     obs, rewards, dones, info = env.step(action)
-    # env.render()
+    if env.agent_keys[0] not in ped_obs.keys():
+        return None
+
+    nearest_ped = 1e6
+    for agent in ped_obs.keys():
+        if agent == env.agent_keys[0]:
+            continue
+
+        ped_dist = np.linalg.norm(ped_obs[agent].ego_vehicle_state.position - ped_obs[env.agent_keys[0]].ego_vehicle_state.position)
+
+        if ped_dist < nearest_ped:
+            nearest_ped = ped_dist
+    
+    return nearest_ped
+                
+
+
+def eval(agent, env, num_episodes, stop_dist):
     import time
 
     time.sleep(5)
-    for episode in episodes(n=num_episodes):
-        # agents = {
-        #     agent_id: agent_spec.build_agent()
-        #     for agent_id, agent_spec in agent_specs.items()
-        # }
+    ped_dist_data= []
+    for episode in range(num_episodes):
+        print("Episode => ",episode)
         observations = env.reset()
-        episode.record_scenario(env.scenario_log)
-
-        dones = {"__all__": False}
-        while not dones["__all__"]:
-            # actions = {
-            #     agent_id: agents[agent_id].act(agent_obs)
-            #     for agent_id, agent_obs in observations.items()
-            # }
-            # action, _states = model.predict(observations)
-            # actions = {
-            #     agent_id: agent.predict(agent_obs)
-            #     for agent_id, agent_obs in observations.items()
-            # }
+        dones = False
+        while not dones:
             action, _ = agent.predict(observations)
             observations, rewards, done, infos = env.step(action)
             dones["__all__"] = done
             episode.record_step(observations, rewards, dones, infos)
 
-        input("Press Enter to end")
+            ped_dist_data.append(closeset_ped_dist(env))
+            observations, rewards, dones, infos = env.step(action)
 
+        # input("Press Enter to end")
+
+    try:
+        np.savetxt(f'{agent.tensorboard_log}/stop_dist_{stop_dist}_data.csv', np.array(ped_dist_data), delimiter=",", fmt='%s')
+    except FileNotFoundError:
+        open(f'{agent.tensorboard_log}/stop_dist_{stop_dist}_data.csv', 'a').close()
+        np.savetxt(f'{agent.tensorboard_log}/stop_dist_{stop_dist}_data.csv', np.array(ped_dist_data), delimiter=",", fmt='%s')
     # env.close()
 
 
@@ -69,4 +79,8 @@ if __name__ == "__main__":
     if config["record_path"] is not None:
         os.makedirs(config["record_path"], exist_ok=True)
 
+<<<<<<< HEAD
     eval(model, env, config["num_eps"])
+=======
+    eval(model, env, config["num_eps"], config["stop_dist_rwd"])
+>>>>>>> ef6ee80d0399d72453761bba0b2a80cb82bdcac3

@@ -39,8 +39,8 @@ def build_agents(
             # },
             agent_builder=agent_builder,
             observation_adapter=agent_builder.observation_adaptor,
-            # reward_adapter=reward_adapter,
-            # action_adapter=action_adapter,
+            # reward_adapter=agent_builder.reward_adaptor,
+            # action_adapter=action_adaptor,
         )
         for agent_id, agent_type, agent_builder in zip(
             agent_ids, agent_types, agent_builders
@@ -84,8 +84,10 @@ def build_algo(config, env):
         # (can be None if you only need prediction from a trained model) has priority over any saved environment
         # XXX: must overwrite env otherwise tries to connect to dead envision server instance
         model = ALGOS[config["algo"]].load(
-            config["load"], env=env, device=device_to_use
+            config["load_path"], env=env, device=device_to_use
         )  # env=None
+
+        env.total_steps = model.num_timesteps
 
         # reset tensorboard_log incase model wasn't initally created from cwd
         model.tensorboard_log = tb_log_dir

@@ -242,6 +242,7 @@ def trainer_parser(program: str):
         action="store_true",
     )
     parser.add_argument("--record_path", type=str, default=None)
+    parser.add_argument("--stop_dist_rwd", type=int, default=None, help="distance from pedestrian at which rwd turns bad")
 
     return parser
 
@@ -256,10 +257,13 @@ def eval_parser(program: str):
     parser.add_argument(
         "--log_dir", type=str, default=path.expanduser("~/paavi_logs/eval_run_logs")
     )
-    parser.add_argument(
-        "--her",
-        help="use hindsight experience replay, implemented for (SAC, TD3, DDPG, DQN).",
-        action="store_true",
-    )
+    parser.add_argument("--stop_dist_rwd", type=int, default=None, help="distance from pedestrian at which rwd turns bad")
+
+
+    # parser.add_argument(
+    #     "--her",
+    #     help="use hindsight experience replay, implemented for (SAC, TD3, DDPG, DQN).",
+    #     action="store_true",
+    # )
 
     return parser
