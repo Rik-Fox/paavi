@@ -23,8 +23,11 @@ from smarts.sstudio import (
 # )
 
 from smarts.sstudio import types as t
-
+from smarts.core.agent_interface import DoneCriteria
 from dataclasses import dataclass
+
+# class RandomEntryTatic(t.EntryTactic):
+#     pass
 
 # scenario = os.path.dirname(os.path.realpath(__file__))
 
@@ -74,92 +77,100 @@ traffic = t.Traffic(
 )
 
 
+ego_mission = [
+    t.Mission(t.Route(begin=("WC", 1, 5), end=("CE", 1, "max")), start_time=0)
+]
+
+social_mission = []
+
+############################# Non-Human Controlled Pedestrian #####################################################
+# social_missions.append(
+#     t.Mission(
+#         t.Route(begin=("NC", 0, 30), end=("CS", 0, "max")),
+#         start_time=0
+#         # vehicle_spec={"vehicle_type": "pedestrian"},
+#     ),
+# )
+social_mission.append(
+    t.Mission(
+        t.Route(begin=("SC", 0, 30), end=("CN", 0, "max")),
+        start_time=0
+        # vehicle_spec={"vehicle_type": "pedestrian"},
+    ),
+)
+
 # Social Agents
 #
 # N.B. You need to have the agent_locator in a location where the left side can be resolved
 #   as a module in form:
 #       "this.resolved.module:attribute"
 #   In your own project you would place the prefabs script where python can reach it
-# social_agent1 = SocialAgentActor(
-#     name="zoo-car1",
-#     agent_locator="scenarios.zoo_intersection.agent_prefabs:zoo-agent2-v0",
-#     initial_speed=20,
-# )
-# social_agent2 = SocialAgentActor(
-#     name="zoo-car2",
-#     agent_locator="scenarios.zoo_intersection.agent_prefabs:zoo-agent2-v0",
-#     initial_speed=20,
-# )
 
-
-# @dataclass(frozen=True)
-# class PedSocialAgentActor(t.SocialAgentActor):
-#     # pasted straight from TrafficActor class
-#     vehicle_type: str = "passenger"
-#     """The type of vehicle this actor uses. ("passenger", "bus", "coach", "truck", "trailer")"""
-
-
-social_agent1 = t.SocialAgentActor(
-    name="pedA",
-    # agent_locator="Envs.zoo_ped_single.agent_prefabs:zoo-agent2-v0",
-    agent_locator="Envs.zoo_ped_single.agent_prefabs:zoo-pedAgent-v0",
-    vehicle_type="pedestrian",
-    policy_kwargs={"agent_params": {"vehicle_type": "pedestrian"}},
-    initial_speed=20,
-)
-# social_agent2 = t.SocialAgentActor(
-#     name="zoo-car2",
-#     agent_locator="Envs.zoo_ped_single.agent_prefabs:zoo-agent2-v0",
-#     vehicle_type="pedestrian",
-#     initial_speed=20,
-# )
-
-# gen_social_agent_missions(
-#     scenario,
-#     social_agent_actor=social_agent2,
-#     name=f"s-agent-{social_agent2.name}",# to give access to scenarios for subprocesses
-#     missions=[Mission(RandomRoute())],
-# )
-
-# gen_social_agent_missions(
-#     scenario,
-#     social_agent_actor=social_agent1,
-#     name=f"s-agent-{social_agent1.name}",
-#     missions=[
-#         EndlessMission(begin=("edge-south-SN", 0, 30)),
-#         Mission(Route(begin=("edge-west-WE", 0, 10), end=("edge-east-WE", 0, 10))),
-#     ],
-# )
-
-# # Agent Missions
-# gen_missions(
-#     scenario=scenario,
-#     missions=[
-#         Mission(Route(begin=("edge-east-EW", 0, 10), end=("edge-south-NS", 0, 10))),
-#         Mission(Route(begin=("edge-south-SN", 0, 10), end=("edge-east-WE", 0, 10))),
-#     ],
-# )
-
-ego_missions = [
-    t.Mission(t.Route(begin=("WC", 1, 5), end=("CE", 1, "max")), start_time=0)
-]
-
-social_missions = [
-    t.Mission(
-        t.Route(begin=("NC", 0, 5), end=("CS", 0, "max")),
-        # vehicle_spec={"vehicle_type": "pedestrian"},
+social_agent = [
+    t.SocialAgentActor(
+        name="ped",
+        # agent_locator="Envs.zoo_ped_single.agent_prefabs:zoo-agent2-v0",
+        agent_locator="paavi.Envs.zoo_ped_multi.agent_prefabs:zoo-pedAgent-v0",
+        vehicle_type="pedestrian",
+        policy_kwargs={
+            "agent_params": {
+                "vehicle_type": "pedestrian",
+                "done_criteria": DoneCriteria(
+                    collision=True,
+                    off_road=True,
+                    off_route=False,
+                    on_shoulder=False,
+                    wrong_way=False,
+                    not_moving=False,
+                ),
+            }
+        },
+        initial_speed=1,
     )
 ]
 
+####################################### Human Controlled Pedestrian #########################################
+# social_mission.append(
+#     t.Mission(
+#         t.Route(begin=("SC", 0, 30), end=("CN", 0, "max")),
+#         start_time=0
+#         # vehicle_spec={"vehicle_type": "pedestrian"},
+#     ),
+# )
+
+# social_agent.append(
+#     t.SocialAgentActor(
+#         name=f"pedA{i}",
+#         # agent_locator="Envs.zoo_ped_single.agent_prefabs:zoo-agent2-v0",
+#         agent_locator="Envs.zoo_ped_multi.agent_prefabs:HumanAgent-v0",
+#         vehicle_type="pedestrian",
+#         policy_kwargs={
+#             "agent_params": {
+#                 "vehicle_type": "pedestrian",
+#                 "done_criteria": DoneCriteria(
+#                     collision=False,
+#                     off_road=True,
+#                     off_route=False,
+#                     on_shoulder=False,
+#                     wrong_way=False,
+#                     not_moving=False,
+#                 ),
+#             }
+#         },
+#         # dont move until told
+#         initial_speed=1,
+#     )
+# )
+
+social_agent_mission = {social_agent[0].name: [social_agent, social_mission]}
+
+# for ped, mis in zip(social_agents, social_missions):
+#     social_agent_missions[ped.name] = [[ped], [mis]]
+
 scenario = t.Scenario(
     # traffic={"all": traffic},
-    ego_missions=ego_missions,
-    social_agent_missions={
-        f"1": [
-            [social_agent1],
-            social_missions,
-        ]
-    },
+    ego_missions=ego_mission,
+    social_agent_missions=social_agent_mission,
 )
 
 gen_scenario(scenario, output_dir=str(Path(__file__).parent), seed=4312)
