@@ -27,6 +27,9 @@ def main(config):
     # monitor_path = os.path.join(, "Monitor_logs")
     run_name = f'{config["algo"]}_seed{config["seed"]}_batchsize{config["batch_size"]}_{config["scenarios"][-1].split("/")[-1]}'
 
+    if config["stop_dist_rwd"]:
+        run_name = f'{run_name}_SD{config["stop_dist_rwd"]}'
+
     run_dir = os.path.join(config["log_dir"], run_name)
     os.makedirs(run_dir, exist_ok=True)
 
@@ -34,7 +37,7 @@ def main(config):
         build_env(config),
         filename=os.path.join(run_dir, "monitor.csv"),
     )
-
+    
     agent = build_algo(config, env=env)
 
     agent.learn(

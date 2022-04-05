@@ -33,6 +33,8 @@ def build_env(config, **kwargs):
     config["agent_specs"] = build.build_agents(
         AGENT_IDS, AGENT_TYPES, AGENT_BUILDERS, **kwargs
     )
+    
+    # config["agent_specs"][AGENT_IDS[0]].agent_builder.STOP_DIST=config["stop_dist_rwd"]
 
     # if config["load_path"] is None:
 
@@ -56,8 +58,8 @@ def build_env(config, **kwargs):
         envision_endpoint=None,
         envision_record_data_replay_path=config["record_path"],
         zoo_addrs=None,
-    )
-    # else:
+        stop_dist_rwd=config["stop_dist_rwd"],
+    )   # else:
     #     env = None
 
     return env

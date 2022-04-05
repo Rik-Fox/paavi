@@ -31,6 +31,7 @@ class sb3HiWayEnv(HiWayEnv):
         envision_endpoint=None,
         envision_record_data_replay_path=None,
         zoo_addrs=None,
+        stop_dist_rwd=None
     ):
 
         super().__init__(
@@ -51,6 +52,8 @@ class sb3HiWayEnv(HiWayEnv):
             envision_record_data_replay_path=envision_record_data_replay_path,
             zoo_addrs=zoo_addrs,
         )
+
+        self.stop_dist = stop_dist_rwd
 
         self.agent_keys = [
             *agent_specs
@@ -189,6 +192,29 @@ class sb3HiWayEnv(HiWayEnv):
         #             np.array(obs.ego_vehicle_state.lane_index),
         #         ]
         #     )
+        if (self.stop_dist is not None):
+            ped_obs, _, _, _ = self._smarts._agent_manager.observe(self._smarts)
+
+            if self.agent_keys[0] in ped_obs.keys():
+                rwd_multiplier = 1
+                nearest_ped = 1e6
+                for agent in ped_obs.keys():
+                    if agent == self.agent_keys[0]:
+                        continue
+
+                    ped_dist = np.linalg.norm(ped_obs[agent].ego_vehicle_state.position - ped_obs[self.agent_keys[0]].ego_vehicle_state.position)
+
+                    if (ped_dist <= self.stop_dist) and (ped_dist < nearest_ped):
+                        nearest_ped = ped_dist
+                        rwd_multiplier = ( nearest_ped/self.stop_dist) #- (self.stop_dist/2)
+                    
+                rewards *= rwd_multiplier
+                if rewards == 0.0:
+                    rewards = 1e-15
+
+        if np.isnan(rewards):
+            import pdb
+            pdb.set_trace()
 
         return observations, rewards, dones, raw_infos
 

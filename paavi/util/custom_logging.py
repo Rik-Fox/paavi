@@ -52,7 +52,7 @@ class CustomTrackingCallback(BaseCallback):
 
             # Retrieve training reward
             x, y = ts2xy(load_results(self.log_dir), "timesteps")
-            # this if basically stops from executing on 0th call
+            # this if basically stops callback from executing on 0th call
             if len(x) > 0:
                 # Mean training reward over the last 100 episodes
                 mean_reward = np.mean(y[-100:])

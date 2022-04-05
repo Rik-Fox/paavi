@@ -201,6 +201,7 @@ class simple_agent(Agent):
 
     OBSERVATION_SPACE = spaces.Box(0.0, np.inf, shape=(5,))
     ACTION_SPACE = spaces.Discrete(4)
+    # STOP_DIST = None
 
     def __init__(self, vehicle_type="passenger") -> None:
         super().__init__()
@@ -217,6 +218,14 @@ class simple_agent(Agent):
                 np.array(env_obs.ego_vehicle_state.lane_index),
             ]
         )
+
+    # def reward_adaptor(self, env_obs: Observation, reward):
+    #     if self.STOP_DIST is None:
+    #         return reward
+    #     else:
+    #         import pdb
+    #         pdb.set_trace()
+
 
 
 class random_agent(Agent):
