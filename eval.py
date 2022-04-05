@@ -79,8 +79,4 @@ if __name__ == "__main__":
     if config["record_path"] is not None:
         os.makedirs(config["record_path"], exist_ok=True)
 
-<<<<<<< HEAD
-    eval(model, env, config["num_eps"])
-=======
     eval(model, env, config["num_eps"], config["stop_dist_rwd"])
->>>>>>> ef6ee80d0399d72453761bba0b2a80cb82bdcac3
