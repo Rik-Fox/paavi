@@ -37,11 +37,11 @@ from dataclasses import dataclass
 #     name="car",
 # )
 
-# cooperative_car = t.TrafficActor(
-#     name="cooperative_car",
-#     speed=t.Distribution(sigma=0.2, mean=1.0),
-#     lane_changing_model=t.LaneChangingModel(impatience=0.1, cooperative=1),
-# )
+cooperative_car = t.TrafficActor(
+    name="cooperative_car",
+    speed=t.Distribution(sigma=0.2, mean=1.0),
+    lane_changing_model=t.LaneChangingModel(impatience=0.1, cooperative=1),
+)
 
 # aggressive_car = t.TrafficActor(
 #     name="aggressive_car",
@@ -53,12 +53,12 @@ from dataclasses import dataclass
 # turn_left_routes = [("east-EW", "south-NS")]
 # turn_right_routes = [("west-WE", "south-NS")]
 
-ped = t.TrafficActor(
-    "ped12",
-    min_gap=t.Distribution(mean=0.1, sigma=0),
-    speed=t.Distribution(mean=1.0, sigma=0.4),
-    vehicle_type="pedestrian",
-)
+# ped = t.TrafficActor(
+#     "ped12",
+#     min_gap=t.Distribution(mean=0.1, sigma=0),
+#     speed=t.Distribution(mean=1.0, sigma=0.4),
+#     vehicle_type="pedestrian",
+# )
 from pathlib import Path
 
 # for name, routes in {
@@ -68,10 +68,11 @@ from pathlib import Path
 traffic = t.Traffic(
     flows=[
         t.Flow(
-            route=t.Route(begin=("NC", 0, 5), end=("CS", 0, "max")),
-            begin=20,
-            rate=random.randint(50, 100),
-            actors={ped: 1},
+            route=t.Route(begin=("WC", 0, 12), end=("CE", 0, "max")),
+            begin=0,
+            rate=50,
+            # rate=random.randint(50, 100),
+            actors={cooperative_car: 1},
         )
     ]
 )
@@ -168,7 +169,7 @@ social_agent_mission = {social_agent[0].name: [social_agent, social_mission]}
 #     social_agent_missions[ped.name] = [[ped], [mis]]
 
 scenario = t.Scenario(
-    # traffic={"all": traffic},
+    traffic={"all": traffic},
     ego_missions=ego_mission,
     social_agent_missions=social_agent_mission,
 )

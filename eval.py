@@ -8,6 +8,7 @@ from paavi.Envs import build_env
 
 logging.basicConfig(level=logging.INFO)
 
+
 def closeset_ped_dist(env):
     ped_obs, _, _, _ = env._smarts._agent_manager.observe(env._smarts)
 
@@ -19,22 +20,24 @@ def closeset_ped_dist(env):
         if agent == env.agent_keys[0]:
             continue
 
-        ped_dist = np.linalg.norm(ped_obs[agent].ego_vehicle_state.position - ped_obs[env.agent_keys[0]].ego_vehicle_state.position)
+        ped_dist = np.linalg.norm(
+            ped_obs[agent].ego_vehicle_state.position
+            - ped_obs[env.agent_keys[0]].ego_vehicle_state.position
+        )
 
         if ped_dist < nearest_ped:
             nearest_ped = ped_dist
-    
+
     return nearest_ped
-                
 
 
 def eval(agent, env, num_episodes, stop_dist):
     import time
 
     time.sleep(5)
-    ped_dist_data= []
+    ped_dist_data = []
     for episode in range(num_episodes):
-        print("Episode => ",episode)
+        print("Episode => ", episode)
         observations = env.reset()
         dones = False
         while not dones:
@@ -49,10 +52,20 @@ def eval(agent, env, num_episodes, stop_dist):
         # input("Press Enter to end")
 
     try:
-        np.savetxt(f'{agent.tensorboard_log}/stop_dist_{stop_dist}_data.csv', np.array(ped_dist_data), delimiter=",", fmt='%s')
+        np.savetxt(
+            f"{agent.tensorboard_log}/stop_dist_{stop_dist}_data.csv",
+            np.array(ped_dist_data),
+            delimiter=",",
+            fmt="%s",
+        )
     except FileNotFoundError:
-        open(f'{agent.tensorboard_log}/stop_dist_{stop_dist}_data.csv', 'a').close()
-        np.savetxt(f'{agent.tensorboard_log}/stop_dist_{stop_dist}_data.csv', np.array(ped_dist_data), delimiter=",", fmt='%s')
+        open(f"{agent.tensorboard_log}/stop_dist_{stop_dist}_data.csv", "a").close()
+        np.savetxt(
+            f"{agent.tensorboard_log}/stop_dist_{stop_dist}_data.csv",
+            np.array(ped_dist_data),
+            delimiter=",",
+            fmt="%s",
+        )
     # env.close()
 
 
