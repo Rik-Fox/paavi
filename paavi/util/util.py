@@ -25,12 +25,3 @@ class StoreDict(argparse.Action):
             # Evaluate the string as python code
             arg_dict[key] = eval(value)
         setattr(namespace, self.dest, arg_dict)
-
-
-def sumo_to_metres(vehicle_state):
-    pos = vehicle_state.position
-    import pdb
-
-    pdb.set_trace()
-    # using assumption sedan ~4m long
-    unit_metre = vehicle_state

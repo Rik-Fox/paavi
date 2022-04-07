@@ -169,7 +169,7 @@ social_agent_mission = {social_agent[0].name: [social_agent, social_mission]}
 #     social_agent_missions[ped.name] = [[ped], [mis]]
 
 scenario = t.Scenario(
-    traffic={"all": traffic},
+    # traffic={"all": traffic},
     ego_missions=ego_mission,
     social_agent_missions=social_agent_mission,
 )

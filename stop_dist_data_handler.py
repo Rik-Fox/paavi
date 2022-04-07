@@ -1,14 +1,29 @@
 from statistics import median
 import numpy as np
 from scipy.stats import skew
+import json
+import pdb
 
-x = np.loadtxt("/home/rawsys/mathgw/paavi_logs/eval_run_logs/stop_dist_None_data.csv")
-x3 = np.loadtxt("/home/rawsys/mathgw/paavi_logs/eval_run_logs/stop_dist_3_data.csv")
-x5 = np.loadtxt("/home/rawsys/mathgw/paavi_logs/eval_run_logs/stop_dist_5_data.csv")
-x10 = np.loadtxt("/home/rawsys/mathgw/paavi_logs/eval_run_logs/stop_dist_10_data.csv")
 
-print(np.mean(x), median(x), skew(x))
-print(np.mean(x3), median(x3), skew(x3) )
-print(np.mean(x5), median(x5), skew(x5) )
-print(np.mean(x10), median(x10), skew(x10))
+def json_extract(filename):
+    data = []
+    with open(filename, "r") as infile:
+        raw = json.load(infile)
+        for episode in raw:
+            data.append(np.array(episode))
 
+    return data
+
+
+def print_stats(x):
+    print(np.mean(x), median(x), skew(x))
+
+
+# ex = np.loadtxt("/home/rfox/paavi_logs/eval_run_logs/stop_dist_None_data.csv")
+
+ex5_42 = json_extract(
+    "/home/rfox/paavi_logs/eval_run_logs/ped_distance_data/SD5_seed42.json"
+)
+for ex in ex5_42:
+    print_stats(ex)
+pdb.set_trace()

@@ -2,7 +2,6 @@ from gym import spaces
 import numpy as np
 from smarts.core.sensors import Observation
 from smarts.env.hiway_env import HiWayEnv
-from paavi.util.util import sumo_to_metres
 
 
 class sb3HiWayEnv(HiWayEnv):
@@ -56,7 +55,7 @@ class sb3HiWayEnv(HiWayEnv):
 
         self.agent_keys = [
             *agent_specs
-        ]  # [*agent_specs] is same as list(dict.keys()), but faster
+        ]  # [*agent_specs] is same as list(dict.keys()), but faster for small dicts
 
         #####################################################
         # raw observation is a dict of agents with observation
@@ -141,35 +140,30 @@ class sb3HiWayEnv(HiWayEnv):
             ]
 
     def proximity_reward_filter(self, rwd):
-        if self.stop_dist is not None:
-            ped_obs, _, _, _ = self._smarts._agent_manager.observe(self._smarts)
+        ped_obs, _, _, _ = self._smarts._agent_manager.observe(self._smarts)
 
-            if self.agent_keys[0] in ped_obs.keys():
-                vehicle_position = sumo_to_metres(
-                    ped_obs[self.agent_keys[0]].ego_vehicle_state
-                )
-                rwd_multiplier = 1
-                nearest_ped = 1e6
-                for agent in ped_obs.keys():
-                    if agent == self.agent_keys[0]:
-                        continue
+        if self.agent_keys[0] in ped_obs.keys():
+            vehicle_position = ped_obs[self.agent_keys[0]].ego_vehicle_state.position
+            rwd_multiplier = 1
+            nearest_ped = 1e6
+            for agent in ped_obs.keys():
+                if agent == self.agent_keys[0]:
+                    continue
 
-                    ped_position = sumo_to_metres(ped_obs[agent].ego_vehicle_state)
+                ped_position = ped_obs[agent].ego_vehicle_state.position
 
-                    ped_dist = np.linalg.norm(ped_position - vehicle_position)
+                ped_dist = np.linalg.norm(ped_position - vehicle_position)
 
-                    if (ped_dist <= self.stop_dist) and (ped_dist < nearest_ped):
-                        nearest_ped = ped_dist
-                        rwd_multiplier = (
-                            nearest_ped / self.stop_dist
-                        )  # - (self.stop_dist/2)
+                if (ped_dist <= self.stop_dist) and (ped_dist < nearest_ped):
+                    nearest_ped = ped_dist
+                    rwd_multiplier = (
+                        nearest_ped / self.stop_dist
+                    )  # - (self.stop_dist/2)
 
-                rwd *= rwd_multiplier
-                if rwd == 0.0:
-                    rwd = 1e-15
+            rwd *= rwd_multiplier
+            if rwd == 0.0:
+                rwd = 1e-15
 
-                return rwd
-        else:
             return rwd
 
     # puts actions into dict to give to smarts,
@@ -224,12 +218,13 @@ class sb3HiWayEnv(HiWayEnv):
         #         ]
         #     )
 
-        rewards = self.proximity_reward_filter(rewards)
+        if self.stop_dist is not None:
+            rewards = self.proximity_reward_filter(rewards)
 
-        if np.isnan(rewards):
-            import pdb
+        # if np.isnan(rewards):
+        #     import pdb
 
-            pdb.set_trace()
+        #     pdb.set_trace()
 
         return observations, rewards, dones, raw_infos
 
@@ -242,6 +237,8 @@ class sb3HiWayEnv(HiWayEnv):
         observations = super().reset()
 
         ## memory error at ~10000 for with about 200GB of space if these logs not deleted
+        # import os
+        # import shutil
         # sumo_logs = os.path.expanduser("~/.smarts/_sumo_run_logs/")
         # if os.path.exists(sumo_logs):
         #     shutil.rmtree(sumo_logs, ignore_errors=True)
