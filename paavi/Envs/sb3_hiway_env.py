@@ -121,6 +121,10 @@ class sb3HiWayEnv(HiWayEnv):
         #         "lane_index": spaces.Discrete(2),
         #     }
         # )
+        if stop_dist_rwd is not None:
+            agent_specs[self.agent_keys[0]].agent_builder.set_stopping_distance(
+                stop_dist_rwd
+            )
 
         self.observation_space = agent_specs[
             self.agent_keys[0]
@@ -139,39 +143,8 @@ class sb3HiWayEnv(HiWayEnv):
                 "change_lane_right",
             ]
 
-    def proximity_reward_filter(self, rwd):
-        ped_obs, _, _, _ = self._smarts._agent_manager.observe(self._smarts)
-
-        if self.agent_keys[0] in ped_obs.keys():
-            vehicle_position = ped_obs[self.agent_keys[0]].ego_vehicle_state.position
-            rwd_multiplier = 1
-            nearest_ped = 1e6
-            for agent in ped_obs.keys():
-                if agent == self.agent_keys[0]:
-                    continue
-
-                ped_position = ped_obs[agent].ego_vehicle_state.position
-
-                ped_dist = np.linalg.norm(ped_position - vehicle_position)
-
-                if (ped_dist <= self.stop_dist) and (ped_dist < nearest_ped):
-                    nearest_ped = ped_dist
-                    rwd_multiplier = (
-                        nearest_ped / self.stop_dist
-                    )  # - (self.stop_dist/2)
-
-            rwd *= rwd_multiplier
-            if rwd == 0.0:
-                rwd = 1e-15
-
-            return rwd
-
     # puts actions into dict to give to smarts,
     def step(self, agent_actions):
-
-        # import pdb
-
-        # pdb.set_trace()
 
         # ## memory error at ~10000 for with about 200GB of space if these logs not deleted
         # sumo_logs = os.path.expanduser("~/.smarts/_sumo_run_logs/")
@@ -180,6 +153,7 @@ class sb3HiWayEnv(HiWayEnv):
 
         if isinstance(self.action_space, spaces.Discrete):
             # print(agent_actions, type(agent_actions), isinstance(agent_actions, np.int64), np.ndim(agent_actions))
+
             # action from sb3 is sometimes 0D array instead of scalar, which has type array but needs handling like a scalar
             if isinstance(agent_actions, np.int64) or (np.ndim(agent_actions) == 0):
                 action_dict = {self.agent_keys[0]: self.actions[agent_actions]}
@@ -208,23 +182,11 @@ class sb3HiWayEnv(HiWayEnv):
         else:
             raise NotImplementedError
 
-        # for agent in raw_observations.keys():
-        #     obs = raw_observations[agent]
-        #     observations = np.hstack(
-        #         [
-        #             np.array(obs.ego_vehicle_state.position),
-        #             np.array(obs.ego_vehicle_state.speed),
-        #             np.array(obs.ego_vehicle_state.lane_index),
-        #         ]
-        #     )
-
-        if self.stop_dist is not None:
-            rewards = self.proximity_reward_filter(rewards)
-
-        # if np.isnan(rewards):
-        #     import pdb
-
-        #     pdb.set_trace()
+        # recall reward filter to provide social agent obs
+        ped_obs, _, _, _ = self._smarts._agent_manager.observe(self._smarts)
+        rewards = self.agent_specs[self.agent_keys[0]].agent_builder.reward_apadter(
+            ped_obs, rewards
+        )
 
         return observations, rewards, dones, raw_infos
 
@@ -236,11 +198,14 @@ class sb3HiWayEnv(HiWayEnv):
 
         observations = super().reset()
 
-        ## memory error at ~10000 for with about 200GB of space if these logs not deleted
-        # import os
-        # import shutil
-        # sumo_logs = os.path.expanduser("~/.smarts/_sumo_run_logs/")
-        # if os.path.exists(sumo_logs):
-        #     shutil.rmtree(sumo_logs, ignore_errors=True)
+        # memory error at ~10000 for with about 200GB of space if these logs not deleted
+        import os
+        import shutil
+        import gc
+
+        sumo_logs = os.path.expanduser("~/.smarts/_sumo_run_logs/")
+        if os.path.exists(sumo_logs):
+            shutil.rmtree(sumo_logs, ignore_errors=True)
+        gc.collect()
 
         return np.hstack([observations[key] for key in self.agent_keys])

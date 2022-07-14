@@ -39,7 +39,7 @@ def build_agents(
             # },
             agent_builder=agent_builder,
             observation_adapter=agent_builder.observation_adaptor,
-            # reward_adapter=agent_builder.reward_adaptor,
+            reward_adapter=agent_builder.reward_adaptor,
             # action_adapter=action_adaptor,
         )
         for agent_id, agent_type, agent_builder in zip(

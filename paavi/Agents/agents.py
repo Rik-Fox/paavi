@@ -202,14 +202,19 @@ class simple_agent(Agent):
 
     OBSERVATION_SPACE = spaces.Box(0.0, np.inf, shape=(5,))
     ACTION_SPACE = spaces.Discrete(4)
-    # STOP_DIST = None
+    STOP_DIST = None
 
     def __init__(self, vehicle_type="passenger") -> None:
         super().__init__()
         self.vehicle_type = vehicle_type
+        # self.STOP_DIST= stop_dist
 
     def act(self, obs: Observation):
         print("should have a learning model that wraps this act -> no action taken")
+
+    @classmethod
+    def set_stopping_distance(self, stop_dist) -> None:
+        self.STOP_DIST = stop_dist
 
     def observation_adaptor(env_obs: Observation):
         return np.hstack(
@@ -220,13 +225,34 @@ class simple_agent(Agent):
             ]
         )
 
-    # def reward_adaptor(self, env_obs: Observation, reward):
-    #     if self.STOP_DIST is None:
-    #         return reward
-    #     else:
-    #         import pdb
-    #         pdb.set_trace()
+    @classmethod
+    def reward_adaptor(self, env_obs: Observation, reward):
+        import pdb
 
+        pdb.set_trace()
+        if self.STOP_DIST is None:
+            return reward
+        # elif env_obs
+        else:
+            vehicle_position = env_obs.ego_vehicle_state.position
+            rwd_multiplier = 1
+            nearest_ped = 1e6
+            ped_obs = env_obs.neighborhood_vehicle_states
+            for agent in ped_obs.keys():
+                if agent == self.agent_keys[0]:
+                    continue
+
+                ped_position = ped_obs[agent].ego_vehicle_state.position
+
+                ped_dist = np.linalg.norm(ped_position - vehicle_position)
+
+                if (ped_dist <= self.stop_dist) and (ped_dist < nearest_ped):
+                    nearest_ped = ped_dist
+                    rwd_multiplier = (
+                        nearest_ped / self.stop_dist
+                    )  # - (self.stop_dist/2)
+
+            reward *= rwd_multiplier
 
 
 class random_agent(Agent):
