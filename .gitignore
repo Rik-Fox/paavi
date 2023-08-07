@@ -138,10 +138,10 @@ logs/
 OpEn_build/
 
 # trained model data
-Models/*.zip
+# Models/*.zip
 
 #singularity containers/images
 *.sif
 
 .history/
-experimentEagle_models/
+# experimentEagle_models/
