@@ -124,12 +124,12 @@ traffic_histories.pkl
 *.blend1
 
 # run logs
-_run_logs
-results
+# _run_logs
+# results
 supervisord.log
 supervisord.pid
 xdummy.log*
-logs/
+# logs/
 
 # replay data
 *.jsonl
